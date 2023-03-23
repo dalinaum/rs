@@ -9,6 +9,7 @@ categories: rs
 [윌리엄 오닐의 Relative Strength Rating](https://www.williamoneil.com/proprietary-ratings-and-rankings/)에 기반하여 상대 강도를 계산했다.
 
 ## 코스피 상대강도
+
 |종목코드|이름|종가 1|종가 2|상대강도|
 |------|---|-----|-----|-----|
 |001570|금양|4510|72200|99|
