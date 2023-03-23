@@ -26,7 +26,6 @@ jobs:
         git config --local user.name "Dalinaum"
         git add .
         git commit -m "[AUTO] Daily KOSPI RS rating"
-        git push origin main
     - name: Push
       uses: ad-m/github-push-action@master
       with:
