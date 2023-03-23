@@ -87,7 +87,7 @@ rs_df['RS'] = (rs_df['Rank'] * 98 / len(rs_df)).apply(np.int64) + 1
 
 sorted = rs_df.sort_values('Rank', ascending=False)
 
-posts_dir = os.path.join("doc", "_posts")
+posts_dir = os.path.join("docs", "_posts")
 result_file_path = os.path.join(posts_dir, f"{date}-kospi-rs.markdown")
 
 with open(result_file_path, "w") as f:
