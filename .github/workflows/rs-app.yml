@@ -2,17 +2,17 @@ name: Scrap KOSPI stock data and calculate RS rating all.
 
 on:
   schedule:
-    - cron: "45 7 * * 1-5"
+    - cron: "00 8 * * 1-5"
 jobs:
   build:
 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.8
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10
+        python-version: '3.10'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
