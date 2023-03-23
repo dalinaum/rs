@@ -2,7 +2,7 @@ name: Scrap KOSPI stock data and calculate RS rating all.
 
 on:
   schedule:
-    - cron: "25 7 * * 1-5"
+    - cron: "35 7 * * 1-5"
 jobs:
   build:
 
