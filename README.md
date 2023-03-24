@@ -1,4 +1,4 @@
-# KOSPI RS 등급 생성기
+# 달리나음의 코스피 상대 강도 등급
 
 [윌리엄 오닐의 Relative Strength Rating](https://www.williamoneil.com/proprietary-ratings-and-rankings/)에 기반한 사이트를 만들었다.
 
