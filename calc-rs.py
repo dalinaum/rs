@@ -40,7 +40,7 @@ for i in kospi_list.itertuples():
         print(f"{file_path}가 이미 있습니다.\n가져오지 않습니다.")
     else:
         print(f"{i.Code}를 가져옵니다.")
-        data = fdr.DataReader(i.Code, "2015")
+        data = fdr.DataReader(i.Code, "2022")
         data.to_csv(file_path)
         print(f"{i.Code}를 가져왔습니다. 잠시 대기합니다.")
         time.sleep(np.random.uniform(0.1, 0.9))
