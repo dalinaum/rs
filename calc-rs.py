@@ -53,19 +53,16 @@ quater = 21 * 3
 # https://www.investopedia.com/ask/answers/021015/how-can-you-calculate-volatility-excel.asp
 # https://www.investopedia.com/articles/06/historicalvolatility.asp
 
-rs_df = pd.DataFrame(columns=['Code', 'Name', 'Score', 'Close1', 'Close2'])
+rs_df = pd.DataFrame(columns=['Code', 'Name', 'Score', 'YesterdayScore', 'Close1', 'Close2'])
 
-for i in kospi_list.itertuples():
-    print(f"작업({i.Index}): {i.Code} / {i.Name}")
-    filename = f"{i.Code}-{i.Name}.csv"
-    file_path = os.path.join(data_dir, filename)
-    data = pd.read_csv(file_path)
+
+def calc_score(data, day=-1):
     try:
-        today = data.loc[data.index[-1]]
-        one_quarter_ago = data.loc[data.index[-1 - (quater)]]
-        two_quarter_ago = data.loc[data.index[-1 - (quater * 2)]]
-        three_quarter_ago = data.loc[data.index[-1 - (quater * 3)]]
-        four_quarter_ago = data.loc[data.index[-1 - (quater * 4)]]
+        today = data.loc[data.index[day]]
+        one_quarter_ago = data.loc[data.index[day - (quater)]]
+        two_quarter_ago = data.loc[data.index[day - (quater * 2)]]
+        three_quarter_ago = data.loc[data.index[day - (quater * 3)]]
+        four_quarter_ago = data.loc[data.index[day - (quater * 4)]]
 
         score_1 = today.Close / one_quarter_ago.Close
         score_2 = one_quarter_ago.Close / two_quarter_ago.Close
@@ -74,16 +71,37 @@ for i in kospi_list.itertuples():
 
         # https://www.williamoneil.com/proprietary-ratings-and-rankings/
         total_score = (score_1 * 2) + score_2 + score_3 + score_4
-        rs_df = rs_df.append(
-            {'Code': i.Code, 'Name': i.Name, 'Score': total_score, 'Close1': four_quarter_ago.Close, 'Close2': today.Close}, ignore_index=True)
-
-        print(total_score)
+        return total_score
 
     except IndexError as e:
         print(f"날짜가 충분하지 않은 것 같습니다. {e}")
+        return -1
+
+
+for i in kospi_list.itertuples():
+    print(f"작업({i.Index}): {i.Code} / {i.Name}")
+    filename = f"{i.Code}-{i.Name}.csv"
+    file_path = os.path.join(data_dir, filename)
+    data = pd.read_csv(file_path)
+    today_score = calc_score(data)
+    yesterday_score = calc_score(data, -2)
+
+    if today_score != -1:
+        today = data.loc[data.index[-1]]
+        four_quarter_ago = data.loc[data.index[-1 - (quater * 4)]]
+        rs_df = rs_df.append(
+            {'Code': i.Code, 'Name': i.Name, 'Score': today_score, 'YesterdayScore': yesterday_score, 'Close1': four_quarter_ago.Close, 'Close2': today.Close}, ignore_index=True)
+    print(f"today score: {today_score} / yesterday score: {yesterday_score}")
 
 rs_df['Rank'] = rs_df['Score'].rank()
 rs_df['RS'] = (rs_df['Rank'] * 98 / len(rs_df)).apply(np.int64) + 1
+
+rs_df['YesterdayRank'] = rs_df['YesterdayScore'].rank()
+rs_df['YesterdayRS'] = (rs_df['YesterdayRank'] * 98 / len(rs_df)).apply(np.int64) + 1
+
+na_index = rs_df['YesterdayRS'].isna()
+rs_df['RankChange'] = rs_df['RS'] - rs_df['YesterdayRS']
+rs_df[na_index]['RankChange'] = -1
 
 sorted = rs_df.sort_values('Rank', ascending=False)
 
@@ -113,10 +131,16 @@ with open(result_file_path, "w") as f:
 
     ## 코스피 상대강도
     
-    |종목코드|이름|종가 1|종가 2|상대강도|
-    |------|---|-----|-----|-----|
+    |종목코드|이름|종가 1|종가 2|상대강도 (전일대비)|
+    |------|---|-----|-----|--------------|
     '''
     f.write(textwrap.dedent(comment))
 
     for i in sorted.itertuples():
-        f.write(f"|{i.Code}|{i.Name}|{i.Close1}|{i.Close2}|{i.RS}|\n")
+        if i.RankChange == 0:
+            change = ""
+        elif i.RankChange > 0:
+            change = f"(+{i.RankChange})"
+        else:
+            change = f"({i.RankChange})"
+        f.write(f"|{i.Code}|{i.Name}|{i.Close1}|{i.Close2}|{i.RS} {change}|\n")
