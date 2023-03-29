@@ -69,6 +69,11 @@ rs_df = pd.DataFrame(columns=[
 ])
 
 
+def c(code):
+    link = f"https://finance.daum.net/quotes/A{code}"
+    return f"[{code}]({link})"
+
+
 def calc_score(data, day=-1):
     try:
         today = data.loc[data.index[day]]
@@ -182,7 +187,7 @@ with open(result_file_path, "w") as f:
         else:
             change = f"({i.RankChange})"
         f.write(
-            f"|{i.Code}|{i.Name}|{i.Close1}|{i.Close2}|{i.RS} {change}|\n")
+            f"|{c(i.Code)}|{i.Name}|{i.Close1}|{i.Close2}|{i.RS} {change}|\n")
 
 
 result_file_path = os.path.join(
@@ -231,4 +236,4 @@ with open(result_file_path, "w") as f:
 
     for i in minervini.itertuples():
         f.write(
-            f"|{i.Code}|{i.Name}|{i.Close2}|{i.RS}|{i.Max52W},{i.Min52W}|{i.MA50},{i.MA150},{i.MA200}|\n")
+            f"|{c(i.Code)}|{i.Name}|{i.Close2}|{i.RS}|{i.Max52W}, {i.Min52W}|{i.MA50}, {i.MA150}, {i.MA200}|\n")
