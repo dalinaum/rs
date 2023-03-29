@@ -191,7 +191,7 @@ with open(result_file_path, "w") as f:
 
 
 result_file_path = os.path.join(
-    posts_dir, f"{date}-trending-template.markdown")
+    posts_dir, f"{date}-trend-template.markdown")
 
 minervini = sorted[sorted.RS >= 70]
 minervini = minervini[minervini.Close2 > minervini.MA50]
