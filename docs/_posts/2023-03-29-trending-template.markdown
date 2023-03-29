@@ -1,10 +1,12 @@
 ---
 layout: single
 title: "미너비니 트렌드 템플릿 2023년 3월 29일"
-date: 2023-03-29 08:32:03 +0900
+date: 2023-03-29 23:16:36 +0900
 categories: minervini
 ---
-마크 미니버니(Mark Minervini)의 트렌드 템플릿(Trend Template)을 계산합니다.
+마크 미니버니(Mark Minervini)의 트렌드 템플릿(Trend Template)을 계산하여 만족한 결과만 나열하였습니다. 필터링에 걸린 종목은 아래에 나열되어 있지 않습니다.
+
+아래 기술된 미너비니 트렌드 템플릿 계산 방식으로 계산합니다. 계산 방법에서 RS 값이 최소 70이상이고 80, 90이면 좋다고 하고 있는데 70이상만 결과로 표기하고 80이나 90에 대해서 특별히 더 자세히 보이지는 않습니다.
 
 ## 미너비니 트렌드 템플릿
 
@@ -78,3 +80,16 @@ categories: minervini
 |[007340](https://finance.daum.net/quotes/A007340)|DN오토모티브|71700|81|83600, 48600|68772, 66054, 63481|
 |[035510](https://finance.daum.net/quotes/A035510)|신세계 I&C|16200|77|19750, 11950|15617, 14291, 14229|
 |[002030](https://finance.daum.net/quotes/A002030)|아세아|144000|75|163500, 100500|140778, 128749, 126964|
+
+## 미너비니 트렌드 템플릿 계산 방식
+
+"Trade Like a Stock Market Wizard: How to Achieve Super Performance in Stocks in Any Market"에서
+
+ 1. The current stock price is above both the 150-day (30-week) and the 200-day (40-week) moving average price lines.
+ 1. The 150-day moving average is above the 200-day moving average.
+ 1. The 200-day moving average line is trending up for at least 1 month (preferably 4–5 months minimum in most cases).
+ 1. The 50-day (10-week) moving average is above both the 150-day and 200-day moving averages.
+ 1. The current stock price is trading above the 50-day moving average.
+ 1. The current stock price is at least 30 percent above its 52-week low. (Many of the best selections will be 100 percent, 300 percent, or greater above their 52-week low before they emerge from a solid consolidation period and mount a large scale advance.)
+ 1. The current stock price is within at least 25 percent of its 52-week high (the closer to a new high the better).
+ 1. The relative strength ranking (as reported in Investor’s Business Daily) is no less than 70, and preferably in the 80s or 90s, which will generally be the case with the better selections.
