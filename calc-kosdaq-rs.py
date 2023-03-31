@@ -10,20 +10,15 @@ import datetime as dt
 import textwrap
 
 
-LIST_FILENAME = "kospi-list.csv"
-TARGET = 'KOSPI'
+LIST_FILENAME = "kosdaq-list.csv"
+TARGET = 'KOSDAQ'
 DATA_DIR_ROOT = "DATA"
 
-if not os.path.exists(LIST_FILENAME):
-    print("코스피 리스트를 새로 가져옵니다.")
-    kospi_list = fdr.StockListing(TARGET)
-    kospi_list.to_csv(LIST_FILENAME)
-else:
-    print("코스피 리스트를 파일에서 읽습니다.")
-    kospi_list = pd.read_csv(LIST_FILENAME)
-print("코스피 리스트를 가져왔습니다.")
+print("코스닥 리스트를 가져옵니다.")
+kosdaq_list = fdr.StockListing(TARGET)
+kosdaq_list.to_csv(LIST_FILENAME)
 
-print(kospi_list.shape)
+print(kosdaq_list.shape)
 
 now = dt.datetime.now()
 date = now.strftime("%Y-%m-%d")
@@ -31,7 +26,7 @@ date = now.strftime("%Y-%m-%d")
 data_dir = os.path.join(DATA_DIR_ROOT, date)
 os.makedirs(data_dir, exist_ok=True)
 
-for i in kospi_list.itertuples():
+for i in kosdaq_list.itertuples():
     print(f"작업({i.Index}): {i.Code} / {i.Name}")
     filename = f"{i.Code}-{i.Name}.csv"
     file_path = os.path.join(data_dir, filename)
@@ -96,7 +91,7 @@ def calc_score(data, day=-1):
         return -1
 
 
-for i in kospi_list.itertuples():
+for i in kosdaq_list.itertuples():
     print(f"작업({i.Index}): {i.Code} / {i.Name}")
     filename = f"{i.Code}-{i.Name}.csv"
     file_path = os.path.join(data_dir, filename)
@@ -151,7 +146,7 @@ rs_df[na_index]['RankChange'] = -1
 sorted = rs_df.sort_values('Rank', ascending=False)
 
 posts_dir = os.path.join("docs", "_posts")
-result_file_path = os.path.join(posts_dir, f"{date}-kospi-rs.markdown")
+result_file_path = os.path.join(posts_dir, f"{date}-kosdaq-rs.markdown")
 
 with open(result_file_path, "w") as f:
     header_start = '''\
@@ -159,7 +154,7 @@ with open(result_file_path, "w") as f:
     layout: single
     '''
     f.write(textwrap.dedent(header_start))
-    f.write(now.strftime('title: "코스피 상대강도 %Y년 %-m월 %-d일"\n'))
+    f.write(now.strftime('title: "코스닥 상대강도 %Y년 %-m월 %-d일"\n'))
     f.write(now.strftime("date: %Y-%m-%d %H:%M:%S +0900\n"))
     header_end = '''\
     categories: rs
@@ -168,11 +163,11 @@ with open(result_file_path, "w") as f:
     f.write(textwrap.dedent(header_end))
 
     comment = '''\
-    코스피 전 종목의 상대강도를 계산했다.
+    코스닥 전 종목의 상대강도를 계산했다.
 
     [윌리엄 오닐의 Relative Strength Rating](https://www.williamoneil.com/proprietary-ratings-and-rankings/)에 기반하여 상대 강도를 계산했다.
 
-    ## 코스피 상대강도
+    ## 코스닥 상대강도
     
     |종목코드|이름|1년 전|종가|상대강도|
     |------|---|-----|--|------|
@@ -191,7 +186,7 @@ with open(result_file_path, "w") as f:
 
 
 result_file_path = os.path.join(
-    posts_dir, f"{date}-trending-template.markdown")
+    posts_dir, f"{date}-kosdaq-trending-template.markdown")
 
 minervini = sorted[sorted.RS >= 70]
 minervini = minervini[minervini.Close2 > minervini.MA50]
@@ -216,7 +211,7 @@ with open(result_file_path, "w") as f:
     layout: single
     '''
     f.write(textwrap.dedent(header_start))
-    f.write(now.strftime('title: "미너비니 트렌드 템플릿 %Y년 %-m월 %-d일"\n'))
+    f.write(now.strftime('title: "코스닥 미너비니 트렌드 템플릿 %Y년 %-m월 %-d일"\n'))
     f.write(now.strftime("date: %Y-%m-%d %H:%M:%S +0900\n"))
     header_end = '''\
     categories: minervini
