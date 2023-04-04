@@ -146,7 +146,7 @@ rs_df[na_index]['RankChange'] = -1
 sorted = rs_df.sort_values('Rank', ascending=False)
 
 posts_dir = os.path.join("docs", "_posts")
-result_file_path = os.path.join(posts_dir, f"{date}-krs-rs.markdown")
+result_file_path = os.path.join(posts_dir, f"{date}-krx-rs.markdown")
 
 with open(result_file_path, "w") as f:
     header_start = '''\
