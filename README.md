@@ -19,3 +19,5 @@ This technical tool is one of the most popular ways for clients to see the marke
 ## 사이트의 계산 방식
 
 오닐의 설명에 따라 4분기의 가격 변동률을 계산해 최근 1분기만 2배로 반영하고 나머지는 균등하게 반영하고 순위를 매겼다. 1등에게 99점 꼴등에게 1점을 할당하도록 균등하게 점수를 매겼다.
+
+계산 방식에 대한 자세한 내용은 [여기](https://dalinaum.github.io/)를 참고하라.
