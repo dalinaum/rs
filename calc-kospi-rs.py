@@ -166,6 +166,7 @@ with open(result_file_path, "w") as f:
     코스피 전 종목의 상대강도를 계산했다.
 
     [윌리엄 오닐의 Relative Strength Rating](https://www.williamoneil.com/proprietary-ratings-and-rankings/)에 기반하여 상대 강도를 계산했다.
+    계산 방식에 대한 자세한 내용은 [여기](https://dalinaum.github.io/)를 참고하라.
 
     ## 코스피 상대강도
     
