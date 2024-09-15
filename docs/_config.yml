@@ -31,3 +31,9 @@ defaults:
     values:
       layout: single
       author_profile: true
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-Y37MGBP94B"
+    anonymize_ip: false # default
