@@ -1,0 +1,18 @@
+[project]
+name = "rs"
+version = "0.1.0"
+description = "KOSPI/KOSDAQ Relative Strength Rating Calculator"
+requires-python = ">=3.10"
+dependencies = [
+    "finance-datareader>=0.9.101",
+    "numpy>=1.24.2",
+    "pandas>=1.5.3",
+]
+
+[dependency-groups]
+dev = [
+    "autopep8>=2.0.2",
+]
+
+[tool.uv.sources]
+finance-datareader = { git = "https://github.com/dalinaum/FinanceDataReader", branch = "krx-stock-code-reform" }
