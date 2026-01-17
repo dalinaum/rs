@@ -116,7 +116,7 @@ for i in kosdaq_list.itertuples():
         data_50_close = data_150_close.tail(50)
         ma_50 = int(data_50_close.mean())
 
-        rs_df = rs_df.append({
+        rs_df = pd.concat([rs_df, pd.DataFrame([{
             'Code': i.Code,
             'Name': i.Name,
             'Score': today_score,
@@ -129,7 +129,7 @@ for i in kosdaq_list.itertuples():
             'LastMonthMA200': last_month_ma_200,
             'Min52W': min_52w,
             'Max52W': max_52w,
-        }, ignore_index=True)
+        }])], ignore_index=True)
     print(f"today score: {today_score} / yesterday score: {yesterday_score}")
 
 rs_df['Rank'] = rs_df['Score'].rank()

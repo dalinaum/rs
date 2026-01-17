@@ -604,8 +604,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "finance-datareader", git = "https://github.com/dalinaum/FinanceDataReader?branch=krx-stock-code-reform" },
-    { name = "numpy", specifier = ">=1.24.2" },
-    { name = "pandas", specifier = ">=1.5.3" },
+    { name = "numpy", specifier = ">=2.0,<3" },
+    { name = "pandas", specifier = ">=2.0,<3" },
 ]
 
 [package.metadata.requires-dev]

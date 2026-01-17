@@ -5,8 +5,8 @@ description = "KOSPI/KOSDAQ Relative Strength Rating Calculator"
 requires-python = ">=3.10"
 dependencies = [
     "finance-datareader>=0.9.101",
-    "numpy>=1.24.2",
-    "pandas>=1.5.3",
+    "numpy>=2.0,<3",
+    "pandas>=2.0,<3",
 ]
 
 [dependency-groups]
