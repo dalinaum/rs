@@ -142,8 +142,8 @@ wheels = [
 
 [[package]]
 name = "finance-datareader"
-version = "0.9.101"
-source = { git = "https://github.com/dalinaum/FinanceDataReader?branch=krx-stock-code-reform#bd339d11fdbf40cae45890e640086bae7324e6ab" }
+version = "0.9.102"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "lxml" },
@@ -152,6 +152,9 @@ dependencies = [
     { name = "requests" },
     { name = "requests-file" },
     { name = "tqdm" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/22/10/fc90f98d6ab233c3435fa0a9d87fd2cc0bacb1b7f2cfae74c1c6b81d9db0/finance_datareader-0.9.102-py3-none-any.whl", hash = "sha256:0f9e6efc157f60e7e52c92409fa3edd7bd7d690e1ce3ff2f09ad59d493f0acac", size = 50043, upload-time = "2026-02-01T17:51:35.162Z" },
 ]
 
 [[package]]
@@ -603,7 +606,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "finance-datareader", git = "https://github.com/dalinaum/FinanceDataReader?branch=krx-stock-code-reform" },
+    { name = "finance-datareader", specifier = ">=0.9.102" },
     { name = "numpy", specifier = ">=2.0,<3" },
     { name = "pandas", specifier = ">=2.0,<3" },
 ]
