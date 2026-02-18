@@ -3,3 +3,6 @@
 
 # macOS
 .DS_Store
+
+# Stock data (too large for git)
+DATA/
