@@ -177,6 +177,34 @@ def run_market_analysis(market_key):
 
     sorted = rs_df.sort_values('Rank', ascending=False)
 
+    # RS 분포 계산
+    bins = list(range(1, 100, 10))  # [1, 11, 21, ..., 91]
+    rs_labels = [f"{b}-{b+9}" for b in bins]
+    rs_labels[-1] = "91-99"  # 마지막 구간 조정
+    rs_distribution = []
+    for b in bins:
+        upper = b + 9 if b < 91 else 99
+        count = int(len(rs_df[(rs_df['RS'] >= b) & (rs_df['RS'] <= upper)]))
+        rs_distribution.append(count)
+
+    # 그라데이션 색상 (RS 낮은 구간: 파랑 → RS 높은 구간: 빨강)
+    rs_colors = [
+        'rgba(0, 0, 180, 0.8)',
+        'rgba(30, 30, 200, 0.8)',
+        'rgba(60, 80, 210, 0.8)',
+        'rgba(80, 130, 200, 0.8)',
+        'rgba(100, 170, 170, 0.8)',
+        'rgba(150, 170, 100, 0.8)',
+        'rgba(200, 150, 60, 0.8)',
+        'rgba(220, 100, 40, 0.8)',
+        'rgba(220, 50, 20, 0.8)',
+        'rgba(180, 0, 0, 0.8)',
+    ]
+
+    rs_labels_js = str(rs_labels).replace("'", '"')
+    rs_distribution_js = str(rs_distribution)
+    rs_colors_js = str(rs_colors).replace("'", '"')
+
     posts_dir = os.path.join("docs", "_posts")
     result_file_path = os.path.join(posts_dir, f"{date}-{slug}-rs.markdown")
 
@@ -194,7 +222,7 @@ def run_market_analysis(market_key):
         '''
         f.write(textwrap.dedent(header_end))
 
-        comment = f'''\
+        intro = f'''\
         {display_name} 전 종목의 상대강도를 계산했다.
 
         [윌리엄 오닐의 Relative Strength Rating](https://www.williamoneil.com/proprietary-ratings-and-rankings/)에 기반하여 상대 강도를 계산했다.
@@ -202,10 +230,45 @@ def run_market_analysis(market_key):
 
         ## {display_name} 상대강도
 
+        '''
+        f.write(textwrap.dedent(intro))
+
+        rs_chart_html = f'''\
+        <div style="max-width:600px;margin:20px auto;">
+        <canvas id="rsChart_{slug}" width="600" height="300"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+        (function() {{
+          var ctx = document.getElementById('rsChart_{slug}').getContext('2d');
+          new Chart(ctx, {{
+            type: 'bar',
+            data: {{
+              labels: {rs_labels_js},
+              datasets: [{{
+                label: 'RS 분포',
+                data: {rs_distribution_js},
+                backgroundColor: {rs_colors_js},
+              }}]
+            }},
+            options: {{
+              responsive: true,
+              plugins: {{
+                title: {{ display: true, text: '{display_name} RS 분포' }}
+              }},
+              scales: {{
+                y: {{ beginAtZero: true, title: {{ display: true, text: '종목 수' }} }},
+                x: {{ title: {{ display: true, text: 'RS 구간' }} }}
+              }}
+            }}
+          }});
+        }})();
+        </script>
+
         |종목코드|이름|1년 전|종가|상대강도|
         |------|---|-----|--|------|
         '''
-        f.write(textwrap.dedent(comment))
+        f.write(textwrap.dedent(rs_chart_html))
 
         for i in sorted.itertuples():
             if i.RankChange == 0:
@@ -251,17 +314,52 @@ def run_market_analysis(market_key):
         '''
         f.write(textwrap.dedent(header_end))
 
-        comment = '''\
+        trend_intro = f'''\
         마크 미니버니(Mark Minervini)의 트렌드 템플릿(Trend Template)을 계산하여 만족한 결과만 나열하였습니다. 필터링에 걸린 종목은 아래에 나열되어 있지 않습니다.
 
         아래 기술된 미너비니 트렌드 템플릿 계산 방식으로 계산합니다. 계산 방법에서 RS 값이 최소 70이상이고 80, 90이면 좋다고 하고 있는데 70이상만 결과로 표기하고 80이나 90에 대해서 특별히 더 자세히 보이지는 않습니다.
+
+        '''
+        f.write(textwrap.dedent(trend_intro))
+
+        trend_chart_html = f'''\
+        <div style="max-width:600px;margin:20px auto;">
+        <canvas id="rsTrendChart_{slug}" width="600" height="300"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+        (function() {{
+          var ctx = document.getElementById('rsTrendChart_{slug}').getContext('2d');
+          new Chart(ctx, {{
+            type: 'bar',
+            data: {{
+              labels: {rs_labels_js},
+              datasets: [{{
+                label: 'RS 분포',
+                data: {rs_distribution_js},
+                backgroundColor: {rs_colors_js},
+              }}]
+            }},
+            options: {{
+              responsive: true,
+              plugins: {{
+                title: {{ display: true, text: '{display_name} RS 분포' }}
+              }},
+              scales: {{
+                y: {{ beginAtZero: true, title: {{ display: true, text: '종목 수' }} }},
+                x: {{ title: {{ display: true, text: 'RS 구간' }} }}
+              }}
+            }}
+          }});
+        }})();
+        </script>
 
         ## 미너비니 트렌드 템플릿
 
         |종목코드|이름|종가|RS|신고가,신저가|MA50,150,200|
         |------|---|---|--|---------|------------|
         '''
-        f.write(textwrap.dedent(comment))
+        f.write(textwrap.dedent(trend_chart_html))
 
         for i in minervini.itertuples():
             f.write(
