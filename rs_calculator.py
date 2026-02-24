@@ -86,7 +86,7 @@ def calc_score(data, day=-1):
         return -1
 
 
-def generate_chart_html(code, name, data, charts_dir):
+def generate_chart_html(code, name, data, charts_dir, display_name):
     """종목별 캔들차트 + RS 점수 추이 HTML 파일 생성."""
     # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
     candle_data = []
@@ -148,6 +148,7 @@ def generate_chart_html(code, name, data, charts_dir):
     rs_json = json.dumps(rs_series)
 
     title = f"{name} ({code})"
+    site_title = f"달리나음의 {display_name} 상대 강도"
 
     html = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -159,8 +160,8 @@ def generate_chart_html(code, name, data, charts_dir):
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     body {{
-      background: #131722;
-      color: #d1d4dc;
+      background: #ffffff;
+      color: #333333;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
@@ -169,8 +170,8 @@ def generate_chart_html(code, name, data, charts_dir):
     }}
     header {{
       padding: 8px 16px;
-      background: #1e222d;
-      border-bottom: 1px solid #2a2e39;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e3eb;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -179,7 +180,7 @@ def generate_chart_html(code, name, data, charts_dir):
     header h1 {{
       font-size: 16px;
       font-weight: 600;
-      color: #d1d4dc;
+      color: #333333;
     }}
     header a {{
       color: #2196f3;
@@ -187,12 +188,19 @@ def generate_chart_html(code, name, data, charts_dir):
       font-size: 13px;
     }}
     header a:hover {{ text-decoration: underline; }}
+    .site-title {{
+      font-size: 13px;
+      color: #787b86;
+      white-space: nowrap;
+      text-decoration: none;
+    }}
+    .site-title:hover {{ text-decoration: underline; }}
     .chart-label {{
       padding: 4px 16px;
       font-size: 11px;
       color: #787b86;
-      background: #1e222d;
-      border-bottom: 1px solid #2a2e39;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e3eb;
       flex-shrink: 0;
     }}
     .chart-container {{
@@ -206,14 +214,14 @@ def generate_chart_html(code, name, data, charts_dir):
     }}
     .divider {{
       height: 4px;
-      background: #2a2e39;
+      background: #e0e3eb;
     }}
     #rs-chart-label {{
       padding: 4px 16px;
       font-size: 11px;
       color: #787b86;
-      background: #1e222d;
-      border-top: 1px solid #2a2e39;
+      background: #f8f9fa;
+      border-top: 1px solid #e0e3eb;
     }}
     #rs-chart {{
       height: calc(40vh - 40px);
@@ -239,6 +247,7 @@ def generate_chart_html(code, name, data, charts_dir):
 <body>
   <header>
     <a href="../">&larr; 목록</a>
+    <a href="../" class="site-title">{site_title}</a>
     <h1>{title}</h1>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
@@ -263,16 +272,16 @@ def generate_chart_html(code, name, data, charts_dir):
 
     const chartOptions = {{
       layout: {{
-        background: {{ color: '#131722' }},
-        textColor: '#d1d4dc',
+        background: {{ color: '#ffffff' }},
+        textColor: '#333333',
       }},
       grid: {{
-        vertLines: {{ color: '#1e222d' }},
-        horzLines: {{ color: '#1e222d' }},
+        vertLines: {{ color: '#e0e3eb' }},
+        horzLines: {{ color: '#e0e3eb' }},
       }},
       crosshair: {{ mode: LightweightCharts.CrosshairMode.Normal }},
-      rightPriceScale: {{ borderColor: '#2a2e39' }},
-      timeScale: {{ borderColor: '#2a2e39', timeVisible: true, fixLeftEdge: true, fixRightEdge: true }},
+      rightPriceScale: {{ borderColor: '#d1d4dc' }},
+      timeScale: {{ borderColor: '#d1d4dc', timeVisible: true, fixLeftEdge: true, fixRightEdge: true }},
     }};
 
     // 캔들차트
@@ -425,7 +434,7 @@ def run_market_analysis(market_key):
             # 종목별 차트 HTML 생성
             try:
                 charts_dir = os.path.join("docs", "charts")
-                generate_chart_html(i.Code, i.Name, data, charts_dir)
+                generate_chart_html(i.Code, i.Name, data, charts_dir, display_name)
                 print(f"{i.Code} 차트 생성 완료")
             except Exception as e:
                 print(f"{i.Code} 차트 생성 실패: {e}")
