@@ -6,3 +6,6 @@
 
 # Stock data (too large for git)
 DATA/
+
+# Chart HTML files (generated at runtime)
+docs/charts/*.html

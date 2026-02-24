@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import FinanceDataReader as fdr
+import json
 import os
 import os.path
 import time
@@ -59,7 +60,7 @@ MARKET_CONFIGS = {
 
 
 def c(code):
-    link = f"https://finance.daum.net/quotes/A{code}"
+    link = f"charts/{code}.html"
     return f"[{code}]({link})"
 
 
@@ -83,6 +84,280 @@ def calc_score(data, day=-1):
     except IndexError as e:
         print(f"날짜가 충분하지 않은 것 같습니다. {e}")
         return -1
+
+
+def generate_chart_html(code, name, data, charts_dir):
+    """종목별 캔들차트 + RS 점수 추이 HTML 파일 생성."""
+    # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
+    candle_data = []
+    volume_data = []
+    for _, row in data.iterrows():
+        date_str = str(row.get('Date', '')).split(' ')[0] if 'Date' in data.columns else str(row.name).split(' ')[0]
+        if not date_str or date_str == 'nan':
+            continue
+        try:
+            candle_data.append({
+                'time': date_str,
+                'open': float(row['Open']),
+                'high': float(row['High']),
+                'low': float(row['Low']),
+                'close': float(row['Close']),
+            })
+            volume_data.append({
+                'time': date_str,
+                'value': float(row['Volume']) if 'Volume' in data.columns else 0,
+                'color': '#26a69a' if float(row['Close']) >= float(row['Open']) else '#ef5350',
+            })
+        except (ValueError, KeyError):
+            continue
+
+    # 이동평균 계산 (종가 시계열 기준)
+    closes = data['Close'].dropna().values
+    dates_all = []
+    for idx in data.index:
+        date_str = str(idx).split(' ')[0]
+        if date_str and date_str != 'nan':
+            dates_all.append(date_str)
+
+    def calc_ma(closes, dates, period):
+        result = []
+        for i in range(len(closes)):
+            if i + 1 >= period:
+                ma_val = float(np.mean(closes[i + 1 - period:i + 1]))
+                result.append({'time': dates[i], 'value': round(ma_val, 2)})
+        return result
+
+    ma50_data = calc_ma(closes, dates_all, 50)
+    ma150_data = calc_ma(closes, dates_all, 150)
+    ma200_data = calc_ma(closes, dates_all, 200)
+
+    # RS 점수 시계열 계산
+    rs_series = []
+    total_len = len(data)
+    min_required = quater * 4
+    for i in range(-min_required, 0):
+        score = calc_score(data, day=i)
+        if score != -1:
+            abs_idx = total_len + i  # i는 음수
+            date_str = str(data.index[abs_idx]).split(' ')[0]
+            if date_str and date_str != 'nan':
+                rs_series.append({'time': date_str, 'value': round(float(score), 4)})
+
+    candle_json = json.dumps(candle_data)
+    volume_json = json.dumps(volume_data)
+    ma50_json = json.dumps(ma50_data)
+    ma150_json = json.dumps(ma150_data)
+    ma200_json = json.dumps(ma200_data)
+    rs_json = json.dumps(rs_series)
+
+    title = f"{name} ({code})"
+
+    html = f"""<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    body {{
+      background: #131722;
+      color: #d1d4dc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }}
+    header {{
+      padding: 8px 16px;
+      background: #1e222d;
+      border-bottom: 1px solid #2a2e39;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }}
+    header h1 {{
+      font-size: 16px;
+      font-weight: 600;
+      color: #d1d4dc;
+    }}
+    header a {{
+      color: #2196f3;
+      text-decoration: none;
+      font-size: 13px;
+    }}
+    header a:hover {{ text-decoration: underline; }}
+    .chart-label {{
+      padding: 4px 16px;
+      font-size: 11px;
+      color: #787b86;
+      background: #1e222d;
+      border-bottom: 1px solid #2a2e39;
+      flex-shrink: 0;
+    }}
+    .chart-container {{
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }}
+    #candle-chart {{
+      flex: 6;
+      min-height: 0;
+    }}
+    .divider {{
+      height: 4px;
+      background: #2a2e39;
+      flex-shrink: 0;
+    }}
+    #rs-chart-label {{
+      padding: 4px 16px;
+      font-size: 11px;
+      color: #787b86;
+      background: #1e222d;
+      border-top: 1px solid #2a2e39;
+      flex-shrink: 0;
+    }}
+    #rs-chart {{
+      flex: 4;
+      min-height: 0;
+    }}
+    .legend {{
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }}
+    .legend-item {{
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }}
+    .legend-dot {{
+      width: 10px;
+      height: 3px;
+      border-radius: 2px;
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="../">&larr; 목록</a>
+    <h1>{title}</h1>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff9800"></div>MA150</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f44336"></div>MA200</div>
+    </div>
+  </header>
+  <div class="chart-label">캔들차트 + 이동평균</div>
+  <div class="chart-container">
+    <div id="candle-chart"></div>
+    <div class="divider"></div>
+    <div id="rs-chart-label">RS 점수 추이</div>
+    <div id="rs-chart"></div>
+  </div>
+
+  <script>
+    const candleData = {candle_json};
+    const volumeData = {volume_json};
+    const ma50Data = {ma50_json};
+    const ma150Data = {ma150_json};
+    const ma200Data = {ma200_json};
+    const rsData = {rs_json};
+
+    const chartOptions = {{
+      layout: {{
+        background: {{ color: '#131722' }},
+        textColor: '#d1d4dc',
+      }},
+      grid: {{
+        vertLines: {{ color: '#1e222d' }},
+        horzLines: {{ color: '#1e222d' }},
+      }},
+      crosshair: {{ mode: LightweightCharts.CrosshairMode.Normal }},
+      rightPriceScale: {{ borderColor: '#2a2e39' }},
+      timeScale: {{ borderColor: '#2a2e39', timeVisible: true }},
+    }};
+
+    // 캔들차트
+    const candleEl = document.getElementById('candle-chart');
+    const candleChart = LightweightCharts.createChart(candleEl, {{
+      ...chartOptions,
+      width: candleEl.clientWidth,
+      height: candleEl.clientHeight,
+    }});
+
+    const candleSeries = candleChart.addCandlestickSeries({{
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderDownColor: '#ef5350',
+      borderUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+      wickUpColor: '#26a69a',
+    }});
+    candleSeries.setData(candleData);
+
+    const ma50Series = candleChart.addLineSeries({{ color: '#2196f3', lineWidth: 1, priceLineVisible: false }});
+    ma50Series.setData(ma50Data);
+
+    const ma150Series = candleChart.addLineSeries({{ color: '#ff9800', lineWidth: 1, priceLineVisible: false }});
+    ma150Series.setData(ma150Data);
+
+    const ma200Series = candleChart.addLineSeries({{ color: '#f44336', lineWidth: 1, priceLineVisible: false }});
+    ma200Series.setData(ma200Data);
+
+    candleChart.timeScale().fitContent();
+
+    // RS 점수 차트
+    const rsEl = document.getElementById('rs-chart');
+    const rsChart = LightweightCharts.createChart(rsEl, {{
+      ...chartOptions,
+      width: rsEl.clientWidth,
+      height: rsEl.clientHeight,
+    }});
+
+    const rsSeries = rsChart.addLineSeries({{
+      color: '#7b1fa2',
+      lineWidth: 2,
+      priceLineVisible: false,
+    }});
+    rsSeries.setData(rsData);
+    rsChart.timeScale().fitContent();
+
+    // 두 차트 시간축 동기화
+    candleChart.timeScale().subscribeVisibleLogicalRangeChange(range => {{
+      if (range !== null) rsChart.timeScale().setVisibleLogicalRange(range);
+    }});
+    rsChart.timeScale().subscribeVisibleLogicalRangeChange(range => {{
+      if (range !== null) candleChart.timeScale().setVisibleLogicalRange(range);
+    }});
+
+    // 반응형 리사이즈
+    function resizeCharts() {{
+      candleChart.applyOptions({{
+        width: candleEl.clientWidth,
+        height: candleEl.clientHeight,
+      }});
+      rsChart.applyOptions({{
+        width: rsEl.clientWidth,
+        height: rsEl.clientHeight,
+      }});
+    }}
+    window.addEventListener('resize', resizeCharts);
+  </script>
+</body>
+</html>
+"""
+
+    charts_dir_full = os.path.join("docs", "charts")
+    os.makedirs(charts_dir_full, exist_ok=True)
+    html_path = os.path.join(charts_dir_full, f"{code}.html")
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(html)
 
 
 def run_market_analysis(market_key):
@@ -162,6 +437,15 @@ def run_market_analysis(market_key):
                 'Min52W': min_52w,
                 'Max52W': max_52w,
             }])], ignore_index=True)
+
+            # 종목별 차트 HTML 생성
+            try:
+                charts_dir = os.path.join("docs", "charts")
+                generate_chart_html(i.Code, i.Name, data, charts_dir)
+                print(f"{i.Code} 차트 생성 완료")
+            except Exception as e:
+                print(f"{i.Code} 차트 생성 실패: {e}")
+
         print(f"today score: {today_score} / yesterday score: {yesterday_score}")
 
     rs_df['Rank'] = rs_df['Score'].rank()
