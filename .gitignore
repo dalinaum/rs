@@ -6,3 +6,6 @@
 
 # Stock data (too large for git)
 DATA/
+
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json
