@@ -90,7 +90,6 @@ def generate_chart_html(code, name, data, charts_dir):
     """종목별 캔들차트 + RS 점수 추이 HTML 파일 생성."""
     # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
     candle_data = []
-    volume_data = []
     for _, row in data.iterrows():
         date_str = str(row.get('Date', '')).split(' ')[0] if 'Date' in data.columns else str(row.name).split(' ')[0]
         if not date_str or date_str == 'nan':
@@ -103,21 +102,14 @@ def generate_chart_html(code, name, data, charts_dir):
                 'low': float(row['Low']),
                 'close': float(row['Close']),
             })
-            volume_data.append({
-                'time': date_str,
-                'value': float(row['Volume']) if 'Volume' in data.columns else 0,
-                'color': '#26a69a' if float(row['Close']) >= float(row['Open']) else '#ef5350',
-            })
         except (ValueError, KeyError):
             continue
 
+    # 날짜 리스트 생성 (Date 컬럼 사용)
+    dates_all = data['Date'].astype(str).str.split(' ').str[0].tolist()
+
     # 이동평균 계산 (종가 시계열 기준)
     closes = data['Close'].dropna().values
-    dates_all = []
-    for idx in data.index:
-        date_str = str(idx).split(' ')[0]
-        if date_str and date_str != 'nan':
-            dates_all.append(date_str)
 
     def calc_ma(closes, dates, period):
         result = []
@@ -138,13 +130,18 @@ def generate_chart_html(code, name, data, charts_dir):
     for i in range(-min_required, 0):
         score = calc_score(data, day=i)
         if score != -1:
-            abs_idx = total_len + i  # i는 음수
-            date_str = str(data.index[abs_idx]).split(' ')[0]
-            if date_str and date_str != 'nan':
-                rs_series.append({'time': date_str, 'value': round(float(score), 4)})
+            abs_idx = total_len + i
+            rs_series.append({'time': dates_all[abs_idx], 'value': round(float(score), 4)})
+
+    # RS 데이터 시작일 기준으로 캔들/MA 데이터 트리밍 (시간축 동기화)
+    if rs_series:
+        rs_start_date = rs_series[0]['time']
+        candle_data = [d for d in candle_data if d['time'] >= rs_start_date]
+        ma50_data = [d for d in ma50_data if d['time'] >= rs_start_date]
+        ma150_data = [d for d in ma150_data if d['time'] >= rs_start_date]
+        ma200_data = [d for d in ma200_data if d['time'] >= rs_start_date]
 
     candle_json = json.dumps(candle_data)
-    volume_json = json.dumps(volume_data)
     ma50_json = json.dumps(ma50_data)
     ma150_json = json.dumps(ma150_data)
     ma200_json = json.dumps(ma200_data)
@@ -205,13 +202,11 @@ def generate_chart_html(code, name, data, charts_dir):
       flex-direction: column;
     }}
     #candle-chart {{
-      flex: 6;
-      min-height: 0;
+      height: calc(60vh - 40px);
     }}
     .divider {{
       height: 4px;
       background: #2a2e39;
-      flex-shrink: 0;
     }}
     #rs-chart-label {{
       padding: 4px 16px;
@@ -219,11 +214,9 @@ def generate_chart_html(code, name, data, charts_dir):
       color: #787b86;
       background: #1e222d;
       border-top: 1px solid #2a2e39;
-      flex-shrink: 0;
     }}
     #rs-chart {{
-      flex: 4;
-      min-height: 0;
+      height: calc(40vh - 40px);
     }}
     .legend {{
       display: flex;
@@ -263,7 +256,6 @@ def generate_chart_html(code, name, data, charts_dir):
 
   <script>
     const candleData = {candle_json};
-    const volumeData = {volume_json};
     const ma50Data = {ma50_json};
     const ma150Data = {ma150_json};
     const ma200Data = {ma200_json};
@@ -280,18 +272,17 @@ def generate_chart_html(code, name, data, charts_dir):
       }},
       crosshair: {{ mode: LightweightCharts.CrosshairMode.Normal }},
       rightPriceScale: {{ borderColor: '#2a2e39' }},
-      timeScale: {{ borderColor: '#2a2e39', timeVisible: true }},
+      timeScale: {{ borderColor: '#2a2e39', timeVisible: true, fixLeftEdge: true, fixRightEdge: true }},
     }};
 
     // 캔들차트
     const candleEl = document.getElementById('candle-chart');
     const candleChart = LightweightCharts.createChart(candleEl, {{
       ...chartOptions,
-      width: candleEl.clientWidth,
-      height: candleEl.clientHeight,
+      autoSize: true,
     }});
 
-    const candleSeries = candleChart.addCandlestickSeries({{
+    const candleSeries = candleChart.addSeries(LightweightCharts.CandlestickSeries, {{
       upColor: '#26a69a',
       downColor: '#ef5350',
       borderDownColor: '#ef5350',
@@ -301,13 +292,13 @@ def generate_chart_html(code, name, data, charts_dir):
     }});
     candleSeries.setData(candleData);
 
-    const ma50Series = candleChart.addLineSeries({{ color: '#2196f3', lineWidth: 1, priceLineVisible: false }});
+    const ma50Series = candleChart.addSeries(LightweightCharts.LineSeries, {{ color: '#2196f3', lineWidth: 1, priceLineVisible: false }});
     ma50Series.setData(ma50Data);
 
-    const ma150Series = candleChart.addLineSeries({{ color: '#ff9800', lineWidth: 1, priceLineVisible: false }});
+    const ma150Series = candleChart.addSeries(LightweightCharts.LineSeries, {{ color: '#ff9800', lineWidth: 1, priceLineVisible: false }});
     ma150Series.setData(ma150Data);
 
-    const ma200Series = candleChart.addLineSeries({{ color: '#f44336', lineWidth: 1, priceLineVisible: false }});
+    const ma200Series = candleChart.addSeries(LightweightCharts.LineSeries, {{ color: '#f44336', lineWidth: 1, priceLineVisible: false }});
     ma200Series.setData(ma200Data);
 
     candleChart.timeScale().fitContent();
@@ -316,11 +307,10 @@ def generate_chart_html(code, name, data, charts_dir):
     const rsEl = document.getElementById('rs-chart');
     const rsChart = LightweightCharts.createChart(rsEl, {{
       ...chartOptions,
-      width: rsEl.clientWidth,
-      height: rsEl.clientHeight,
+      autoSize: true,
     }});
 
-    const rsSeries = rsChart.addLineSeries({{
+    const rsSeries = rsChart.addSeries(LightweightCharts.LineSeries, {{
       color: '#7b1fa2',
       lineWidth: 2,
       priceLineVisible: false,
@@ -328,26 +318,20 @@ def generate_chart_html(code, name, data, charts_dir):
     rsSeries.setData(rsData);
     rsChart.timeScale().fitContent();
 
-    // 두 차트 시간축 동기화
+    // 두 차트 시간축 동기화 (같은 날짜 범위이므로 logical range 사용)
+    let syncing = false;
     candleChart.timeScale().subscribeVisibleLogicalRangeChange(range => {{
-      if (range !== null) rsChart.timeScale().setVisibleLogicalRange(range);
+      if (syncing || !range) return;
+      syncing = true;
+      rsChart.timeScale().setVisibleLogicalRange(range);
+      syncing = false;
     }});
     rsChart.timeScale().subscribeVisibleLogicalRangeChange(range => {{
-      if (range !== null) candleChart.timeScale().setVisibleLogicalRange(range);
+      if (syncing || !range) return;
+      syncing = true;
+      candleChart.timeScale().setVisibleLogicalRange(range);
+      syncing = false;
     }});
-
-    // 반응형 리사이즈
-    function resizeCharts() {{
-      candleChart.applyOptions({{
-        width: candleEl.clientWidth,
-        height: candleEl.clientHeight,
-      }});
-      rsChart.applyOptions({{
-        width: rsEl.clientWidth,
-        height: rsEl.clientHeight,
-      }});
-    }}
-    window.addEventListener('resize', resizeCharts);
   </script>
 </body>
 </html>
