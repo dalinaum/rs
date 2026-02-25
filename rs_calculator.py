@@ -168,8 +168,24 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
       height: 100vh;
       overflow: hidden;
     }}
-    header {{
-      padding: 8px 16px;
+    .masthead {{
+      padding: 12px 16px;
+      background: #93c7c4;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }}
+    .masthead .site-title {{
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }}
+    .masthead .site-title:hover {{ opacity: 0.85; }}
+    .toolbar {{
+      padding: 6px 16px;
       background: #f8f9fa;
       border-bottom: 1px solid #e0e3eb;
       display: flex;
@@ -177,24 +193,17 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
       gap: 16px;
       flex-shrink: 0;
     }}
-    header h1 {{
-      font-size: 16px;
+    .toolbar h1 {{
+      font-size: 15px;
       font-weight: 600;
       color: #333333;
     }}
-    header a {{
+    .toolbar a {{
       color: #2196f3;
       text-decoration: none;
       font-size: 13px;
     }}
-    header a:hover {{ text-decoration: underline; }}
-    .site-title {{
-      font-size: 13px;
-      color: #787b86;
-      white-space: nowrap;
-      text-decoration: none;
-    }}
-    .site-title:hover {{ text-decoration: underline; }}
+    .toolbar a:hover {{ text-decoration: underline; }}
     .chart-label {{
       padding: 4px 16px;
       font-size: 11px;
@@ -245,16 +254,18 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
   </style>
 </head>
 <body>
-  <header>
-    <a href="../">&larr; 목록</a>
+  <div class="masthead">
     <a href="../" class="site-title">{site_title}</a>
+  </div>
+  <div class="toolbar">
+    <a href="../">&larr; 목록</a>
     <h1>{title}</h1>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
       <div class="legend-item"><div class="legend-dot" style="background:#ff9800"></div>MA150</div>
       <div class="legend-item"><div class="legend-dot" style="background:#f44336"></div>MA200</div>
     </div>
-  </header>
+  </div>
   <div class="chart-label">캔들차트 + 이동평균</div>
   <div class="chart-container">
     <div id="candle-chart"></div>
