@@ -27,14 +27,17 @@
   - TradingView Lightweight Charts v4 (CDN)
   - 캔들차트 + MA50(파란)/MA150(주황)/MA200(빨간) 오버레이
   - RS 점수 추이 라인차트 (하단)
-  - 두 차트 시간축 동기화, 다크 테마, 반응형
-- `c(code)` 함수: `finance.daum.net` → `charts/{code}.html` 상대 링크로 변경
+  - 두 차트 시간축 동기화, 반응형
+- 라이트 테마 적용 (배경 #ffffff, 텍스트 #333333)
+- masthead(#93c7c4, 사이트 타이틀) + toolbar(종목명, 범례) 헤더 구조
+- `c(code)` 함수: `finance.daum.net` → `/charts/{code}.html` 절대 경로로 변경
 - `.gitignore`에 `docs/charts/*.html` 추가
 - `docs/charts/.gitkeep` 생성
+- Jekyll 로컬 테스트로 차트 링크 정상 동작 확인 완료
 
-### PR-3: 테이블 가시성 개선 ✅ (리뷰 대기)
+### PR-3: 테이블 가시성 개선 ✅ (머지 완료)
 - **PR**: [#9](https://github.com/dalinaum/rs/pull/9)
-- **worktree**: rs-worktree-3, **브랜치**: improve-table-ux
+- **worktree**: rs-worktree-3, **브랜치**: improve-table-ux (삭제됨)
 - RS 변화량 이모지: 🔺(상승), 🔻(하락), ▬(변화없음)
 - RS 포스트에 1년 수익률 컬럼 추가 (`+123.4%` 형식)
 - 가격에 천단위 구분자 (`19320` → `19,320`)
@@ -50,13 +53,10 @@
 
 ## 머지 전략
 
-PR-2, PR-3, PR-4 모두 `rs_calculator.py`를 수정하므로 충돌 발생.
+**PR-3 머지 완료.** PR-2 머지 시 `rs_calculator.py` 충돌 해결 필요.
 
-**권장 머지 순서:**
-1. **PR-3** (테이블 UX) — 테이블 출력 부분만 수정, 충돌 범위 작음
-2. **PR-2** (캔들차트) — `c(code)` 함수 + `generate_chart_html()` 추가, 가장 큰 변경
-
-각 머지 후 다음 PR의 브랜치를 main에 rebase하여 충돌 해결.
+**남은 머지:**
+1. **PR-2** (캔들차트) — 사용자 리뷰 후 머지. main에 rebase하여 PR-3 변경사항과 충돌 해결.
 
 ---
 

@@ -14,12 +14,10 @@
 |----|------|--------|------|
 | PR-1 | py 파일 중복 제거 → 공통 모듈 분리 | `refactor-dedup` | **머지 완료** ([#7](https://github.com/dalinaum/rs/pull/7)) |
 | PR-2 | 종목별 캔들차트 페이지 생성 | `add-inline-charts` | **리뷰 대기** ([#8](https://github.com/dalinaum/rs/pull/8)) |
-| PR-3 | 테이블 가시성 개선 | `improve-table-ux` | **리뷰 대기** ([#9](https://github.com/dalinaum/rs/pull/9)) |
+| PR-3 | 테이블 가시성 개선 | `improve-table-ux` (삭제됨) | **머지 완료** ([#9](https://github.com/dalinaum/rs/pull/9)) |
 | PR-4 | RS 분포 히스토그램 차트 추가 | `add-rs-chart` | **닫힘** ([#10](https://github.com/dalinaum/rs/pull/10)) — 불필요한 기능으로 판단 |
 
-PR-2, PR-3 모두 `main` base. PR-1 머지 후 병렬 작업 완료.
-
-**머지 순서 주의**: PR-2, PR-3은 모두 `rs_calculator.py`를 다르게 수정했으므로 머지 시 **충돌 해결 필요**. 권장 순서: PR-3 → PR-2 (충돌 범위가 작은 것부터).
+PR-3 머지 완료. PR-2는 사용자 리뷰 후 머지 예정. PR-2 머지 시 `rs_calculator.py` 충돌 해결 필요.
 
 ### 에이전트 구조
 - **메인**: Claude Code (플래닝, 작업 분배, 조율)
@@ -27,9 +25,15 @@ PR-2, PR-3 모두 `main` base. PR-1 머지 후 병렬 작업 완료.
 - 각 worker는 별도의 git worktree에서 독립 작업 → PR 생성 → 사용자 검수
 
 ### Worktree 현황
-- `rs-worktree-2` → `add-inline-charts` (PR-2)
-- `rs-worktree-3` → `improve-table-ux` (PR-3)
+- `rs-worktree-2` → `add-inline-charts` (PR-2, 리뷰 대기)
+- `rs-worktree-3` → `improve-table-ux` (PR-3, 머지 완료)
 - `rs-worktree-4` → `add-rs-chart` (PR-4, 닫힘)
+
+### 로컬 Jekyll 테스트 환경
+- Ruby: rbenv 3.3.10 (`docs/.ruby-version`)
+- `bundle config set --local path 'vendor/bundle'`로 프로젝트 로컬 설치
+- `bundle exec jekyll serve --limit_posts 5 --future`로 테스트
+- `github-pages` gem v232 (Jekyll 3.10.0 + Liquid 4.0.4)
 
 ---
 
@@ -48,8 +52,9 @@ PR-2, PR-3 모두 `main` base. PR-1 머지 후 병렬 작업 완료.
 
 ### PR별 리뷰 포인트
 - **PR-2**: `generate_chart_html()`이 종목당 calc_score()를 ~252번 호출 → KOSPI ~900종목이면 약 23만 회 호출. 성능 검증 필요.
-- **PR-2**: `c(code)` 함수가 상대 경로 `charts/{code}.html`을 반환 → Jekyll permalink 구조에서 정상 동작하는지 확인 필요
-- **PR-3**: Close1, Close2에 `{:,}` 포맷 적용 → float 값이면 `1,234.0` 형태가 될 수 있음. `int()` 변환 확인 필요
+- **PR-2**: `c(code)` 함수 → 절대 경로 `/charts/{code}.html`로 수정 완료 (Jekyll permalink 호환)
+- **PR-2**: 라이트 테마 적용, masthead(#93c7c4) + toolbar 헤더 구조로 변경 완료
+- **PR-3**: ✅ 머지 완료. 테이블 이모지, 천단위 구분자, 1년 수익률 정상 동작 확인
 ### PR-4 폐기 사유
 - RS 분포 히스토그램은 실제 사용 시 유용하지 않은 기능으로 판단됨
 - AI 에이전트가 사용자의 명시적 확인 없이 기능을 제안·구현한 사례 → `verify-before-build.md` 참고
