@@ -202,20 +202,25 @@ def run_market_analysis(market_key):
 
         ## {display_name} 상대강도
 
-        |종목코드|이름|1년 전|종가|상대강도|
-        |------|---|-----|--|------|
+        |종목코드|이름|1년 전|종가|1년 수익률|상대강도|
+        |------|---|-----|--|--------|------|
         '''
         f.write(textwrap.dedent(comment))
 
         for i in sorted.itertuples():
             if i.RankChange == 0:
-                change = ""
+                change = "▬"
             elif i.RankChange > 0:
-                change = f"(+{i.RankChange})"
+                change = f"🔺(+{i.RankChange})"
             else:
-                change = f"({i.RankChange})"
+                change = f"🔻({i.RankChange})"
+            pct = (i.Close2 - i.Close1) / i.Close1 * 100
+            if pct >= 0:
+                pct_str = f"+{pct:.1f}%"
+            else:
+                pct_str = f"{pct:.1f}%"
             f.write(
-                f"|{c(i.Code)}|{i.Name}|{i.Close1}|{i.Close2}|{i.RS} {change}|\n")
+                f"|{c(i.Code)}|{i.Name}|{i.Close1:,}|{i.Close2:,}|{pct_str}|{i.RS} {change}|\n")
 
     result_file_path = os.path.join(
         posts_dir, f"{date}-{slug}-trend-template.markdown")
@@ -264,8 +269,14 @@ def run_market_analysis(market_key):
         f.write(textwrap.dedent(comment))
 
         for i in minervini.itertuples():
+            if i.RankChange == 0:
+                trend_change = "▬"
+            elif i.RankChange > 0:
+                trend_change = f"🔺(+{i.RankChange})"
+            else:
+                trend_change = f"🔻({i.RankChange})"
             f.write(
-                f"|{c(i.Code)}|{i.Name}|{i.Close2}|{i.RS}|{i.Max52W}, {i.Min52W}|{i.MA50}, {i.MA150}, {i.MA200}|\n")
+                f"|{c(i.Code)}|{i.Name}|{i.Close2:,}|{i.RS} {trend_change}|{i.Max52W:,}, {i.Min52W:,}|{i.MA50:,}, {i.MA150:,}, {i.MA200:,}|\n")
 
         f.write("\n")
         footer = '''\
