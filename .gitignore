@@ -1,5 +1,6 @@
 # Python
 .venv
+__pycache__/
 
 # macOS
 .DS_Store
@@ -9,3 +10,5 @@ DATA/
 
 # Chart HTML files (generated at runtime)
 docs/charts/*.html
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json
