@@ -86,8 +86,8 @@ def calc_score(data, day=-1):
         return -1
 
 
-def generate_chart_html(code, name, data, charts_dir, display_name):
-    """종목별 캔들차트 + RS 점수 추이 HTML 파일 생성."""
+def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentile_series):
+    """종목별 캔들차트 + RS 백분위 추이 HTML 파일 생성."""
     # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
     candle_data = []
     for _, row in data.iterrows():
@@ -123,15 +123,8 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
     ma150_data = calc_ma(closes, dates_all, 150)
     ma200_data = calc_ma(closes, dates_all, 200)
 
-    # RS 점수 시계열 계산
-    rs_series = []
-    total_len = len(data)
-    min_required = quater * 4
-    for i in range(-min_required, 0):
-        score = calc_score(data, day=i)
-        if score != -1:
-            abs_idx = total_len + i
-            rs_series.append({'time': dates_all[abs_idx], 'value': round(float(score), 4)})
+    # 외부에서 전달받은 RS 백분위 시계열 사용
+    rs_series = rs_percentile_series
 
     # RS 데이터 시작일 기준으로 캔들/MA 데이터 트리밍 (시간축 동기화)
     if rs_series:
@@ -270,7 +263,7 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
   <div class="chart-container">
     <div id="candle-chart"></div>
     <div class="divider"></div>
-    <div id="rs-chart-label">RS 점수 추이</div>
+    <div id="rs-chart-label">RS 백분위 추이</div>
     <div id="rs-chart"></div>
   </div>
 
@@ -401,6 +394,8 @@ def run_market_analysis(market_key):
     print("모든 항목을 가져왔습니다.")
 
     rs_df = pd.DataFrame(columns=RS_DF_COLUMNS)
+    stock_data_cache = {}      # {code: (name, data_df)}
+    daily_raw_scores = {}      # {date_str: {code: raw_score}}
 
     for i in stock_list.itertuples():
         print(f"작업({i.Index}): {i.Code} / {i.Name}")
@@ -411,6 +406,8 @@ def run_market_analysis(market_key):
         yesterday_score = calc_score(data, -2)
 
         if today_score != -1:
+            stock_data_cache[i.Code] = (i.Name, data)
+
             today = data.loc[data.index[-1]]
             four_quarter_ago = data.loc[data.index[-1 - (quater * 4)]]
 
@@ -442,13 +439,20 @@ def run_market_analysis(market_key):
                 'Max52W': max_52w,
             }])], ignore_index=True)
 
-            # 종목별 차트 HTML 생성
-            try:
-                charts_dir = os.path.join("docs", "charts")
-                generate_chart_html(i.Code, i.Name, data, charts_dir, display_name)
-                print(f"{i.Code} 차트 생성 완료")
-            except Exception as e:
-                print(f"{i.Code} 차트 생성 실패: {e}")
+            # 과거 raw score 시계열 수집 (차트 백분위 변환용)
+            total_len = len(data)
+            min_required = quater * 4
+            # Close가 NaN인 행을 제외한 날짜 목록
+            mask = data['Close'].notna()
+            dates_all = data.loc[mask, 'Date'].astype(str).str.split(' ').str[0].tolist()
+            for day_offset in range(-min_required, 0):
+                score = calc_score(data, day=day_offset)
+                if score != -1:
+                    abs_idx = total_len + day_offset
+                    date_str = dates_all[abs_idx]
+                    if date_str not in daily_raw_scores:
+                        daily_raw_scores[date_str] = {}
+                    daily_raw_scores[date_str][i.Code] = score
 
         print(f"today score: {today_score} / yesterday score: {yesterday_score}")
 
@@ -462,6 +466,32 @@ def run_market_analysis(market_key):
     na_index = rs_df['YesterdayRS'].isna()
     rs_df['RankChange'] = rs_df['RS'] - rs_df['YesterdayRS']
     rs_df[na_index]['RankChange'] = -1
+
+    # 일별 백분위 계산 (차트용)
+    daily_percentiles = {}  # {date_str: {code: percentile(1~100)}}
+    for date_str, scores in daily_raw_scores.items():
+        scores_series = pd.Series(scores)
+        ranks = scores_series.rank()
+        percentiles = (ranks * 98 / len(scores_series)).apply(np.int64) + 1
+        daily_percentiles[date_str] = percentiles.to_dict()
+
+    # 백분위 계산 완료 후 차트 생성
+    charts_dir = os.path.join("docs", "charts")
+    sorted_dates = list(daily_percentiles.keys())
+    sorted_dates.sort()
+    for code, (name, data) in stock_data_cache.items():
+        rs_percentile_series = []
+        for date_str in sorted_dates:
+            if code in daily_percentiles[date_str]:
+                rs_percentile_series.append({
+                    'time': date_str,
+                    'value': int(daily_percentiles[date_str][code])
+                })
+        try:
+            generate_chart_html(code, name, data, charts_dir, display_name, rs_percentile_series)
+            print(f"{code} 차트 생성 완료")
+        except Exception as e:
+            print(f"{code} 차트 생성 실패: {e}")
 
     sorted = rs_df.sort_values('Rank', ascending=False)
 
