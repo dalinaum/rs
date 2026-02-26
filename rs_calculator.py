@@ -91,9 +91,10 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
     # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
     candle_data = []
     for _, row in data.iterrows():
-        date_str = str(row.get('Date', '')).split(' ')[0] if 'Date' in data.columns else str(row.name).split(' ')[0]
-        if not date_str or date_str == 'nan':
+        value = row.get('Date', None)
+        if pd.isna(value):
             continue
+        date_str = str(value).split(' ')[0]
         try:
             candle_data.append({
                 'time': date_str,
@@ -105,11 +106,10 @@ def generate_chart_html(code, name, data, charts_dir, display_name):
         except (ValueError, KeyError):
             continue
 
-    # 날짜 리스트 생성 (Date 컬럼 사용)
-    dates_all = data['Date'].astype(str).str.split(' ').str[0].tolist()
-
-    # 이동평균 계산 (종가 시계열 기준)
-    closes = data['Close'].dropna().values
+    # Close가 NaN인 행을 제외하고 날짜/종가 짝을 맞춤
+    mask = data['Close'].notna()
+    dates_all = data.loc[mask, 'Date'].astype(str).str.split(' ').str[0].tolist()
+    closes = data.loc[mask, 'Close'].values
 
     def calc_ma(closes, dates, period):
         result = []
