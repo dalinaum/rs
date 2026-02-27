@@ -357,7 +357,7 @@ def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentil
         f.write(html)
 
 
-def run_market_analysis(market_key):
+def run_market_analysis(market_key, target_date=None):
     config = MARKET_CONFIGS[market_key]
     target = config['target']
     list_filename = config['list_filename']
@@ -366,13 +366,23 @@ def run_market_analysis(market_key):
     fetch_message = config['fetch_message']
 
     print(fetch_message)
-    stock_list = fdr.StockListing(target)
-    stock_list.to_csv(list_filename)
+    try:
+        stock_list = fdr.StockListing(target)
+        stock_list.to_csv(list_filename)
+    except Exception as e:
+        print(f"StockListing 실패: {e}")
+        print(f"기존 {list_filename}을 사용합니다.")
+        stock_list = pd.read_csv(list_filename, index_col=0)
+        stock_list['Code'] = stock_list['Code'].astype(str).str.zfill(6)
 
     print(stock_list.shape)
 
-    now = dt.datetime.now()
-    date = now.strftime("%Y-%m-%d")
+    if target_date:
+        now = dt.datetime.strptime(target_date, "%Y-%m-%d")
+        date = target_date
+    else:
+        now = dt.datetime.now()
+        date = now.strftime("%Y-%m-%d")
 
     data_dir = os.path.join(DATA_DIR_ROOT, date)
     os.makedirs(data_dir, exist_ok=True)

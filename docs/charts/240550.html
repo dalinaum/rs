@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>동방메디컬 (240550)</title>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #ffffff;
+      color: #333333;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .masthead {
+      padding: 12px 16px;
+      background: #93c7c4;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .masthead .site-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .masthead .site-title:hover { opacity: 0.85; }
+    .toolbar {
+      padding: 6px 16px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e3eb;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .toolbar h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333333;
+    }
+    .toolbar a {
+      color: #2196f3;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .toolbar a:hover { text-decoration: underline; }
+    .chart-label {
+      padding: 4px 16px;
+      font-size: 11px;
+      color: #787b86;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e3eb;
+      flex-shrink: 0;
+    }
+    .chart-container {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #candle-chart {
+      height: calc(60vh - 40px);
+    }
+    .divider {
+      height: 4px;
+      background: #e0e3eb;
+    }
+    #rs-chart-label {
+      padding: 4px 16px;
+      font-size: 11px;
+      color: #787b86;
+      background: #f8f9fa;
+      border-top: 1px solid #e0e3eb;
+    }
+    #rs-chart {
+      height: calc(40vh - 40px);
+    }
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 3px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="masthead">
+    <a href="../" class="site-title">달리나음의 KRX 상대 강도</a>
+  </div>
+  <div class="toolbar">
+    <a href="../">&larr; 목록</a>
+    <h1>동방메디컬 (240550)</h1>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff9800"></div>MA150</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f44336"></div>MA200</div>
+    </div>
+  </div>
+  <div class="chart-label">캔들차트 + 이동평균</div>
+  <div class="chart-container">
+    <div id="candle-chart"></div>
+    <div class="divider"></div>
+    <div id="rs-chart-label">RS 백분위 추이</div>
+    <div id="rs-chart"></div>
+  </div>
+
+  <script>
+    const candleData = [{"time": "2026-02-26", "open": 8040.0, "high": 8220.0, "low": 7720.0, "close": 7820.0}, {"time": "2026-02-27", "open": 7810.0, "high": 7960.0, "low": 7690.0, "close": 7700.0}];
+    const ma50Data = [{"time": "2026-02-26", "value": 7814.0}, {"time": "2026-02-27", "value": 7803.6}];
+    const ma150Data = [{"time": "2026-02-26", "value": 9384.33}, {"time": "2026-02-27", "value": 9351.87}];
+    const ma200Data = [{"time": "2026-02-26", "value": 10056.75}, {"time": "2026-02-27", "value": 10043.6}];
+    const rsData = [{"time": "2026-02-26", "value": 15}, {"time": "2026-02-27", "value": 18}];
+
+    const chartOptions = {
+      layout: {
+        background: { color: '#ffffff' },
+        textColor: '#333333',
+      },
+      grid: {
+        vertLines: { color: '#e0e3eb' },
+        horzLines: { color: '#e0e3eb' },
+      },
+      crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+      rightPriceScale: { borderColor: '#d1d4dc' },
+      timeScale: { borderColor: '#d1d4dc', timeVisible: true, fixLeftEdge: true, fixRightEdge: true },
+    };
+
+    // 캔들차트
+    const candleEl = document.getElementById('candle-chart');
+    const candleChart = LightweightCharts.createChart(candleEl, {
+      ...chartOptions,
+      autoSize: true,
+    });
+
+    const candleSeries = candleChart.addSeries(LightweightCharts.CandlestickSeries, {
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderDownColor: '#ef5350',
+      borderUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+      wickUpColor: '#26a69a',
+    });
+    candleSeries.setData(candleData);
+
+    const ma50Series = candleChart.addSeries(LightweightCharts.LineSeries, { color: '#2196f3', lineWidth: 1, priceLineVisible: false });
+    ma50Series.setData(ma50Data);
+
+    const ma150Series = candleChart.addSeries(LightweightCharts.LineSeries, { color: '#ff9800', lineWidth: 1, priceLineVisible: false });
+    ma150Series.setData(ma150Data);
+
+    const ma200Series = candleChart.addSeries(LightweightCharts.LineSeries, { color: '#f44336', lineWidth: 1, priceLineVisible: false });
+    ma200Series.setData(ma200Data);
+
+    candleChart.timeScale().fitContent();
+
+    // RS 점수 차트
+    const rsEl = document.getElementById('rs-chart');
+    const rsChart = LightweightCharts.createChart(rsEl, {
+      ...chartOptions,
+      autoSize: true,
+    });
+
+    const rsSeries = rsChart.addSeries(LightweightCharts.LineSeries, {
+      color: '#7b1fa2',
+      lineWidth: 2,
+      priceLineVisible: false,
+    });
+    rsSeries.setData(rsData);
+    rsChart.timeScale().fitContent();
+
+    // 두 차트 시간축 동기화 (같은 날짜 범위이므로 logical range 사용)
+    let syncing = false;
+    candleChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+      if (syncing || !range) return;
+      syncing = true;
+      rsChart.timeScale().setVisibleLogicalRange(range);
+      syncing = false;
+    });
+    rsChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+      if (syncing || !range) return;
+      syncing = true;
+      candleChart.timeScale().setVisibleLogicalRange(range);
+      syncing = false;
+    });
+  </script>
+</body>
+</html>
