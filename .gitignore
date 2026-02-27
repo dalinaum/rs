@@ -8,7 +8,5 @@ __pycache__/
 # Stock data (too large for git)
 DATA/
 
-# Chart HTML files (generated at runtime)
-docs/charts/*.html
 # Claude Code local settings (personal, not shared)
 .claude/settings.local.json

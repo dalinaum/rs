@@ -60,7 +60,7 @@ MARKET_CONFIGS = {
 
 
 def c(code):
-    link = f"charts/{code}.html"
+    link = "{{ site.baseurl }}" + f"/charts/{code}.html"
     return f"[{code}]({link})"
 
 
