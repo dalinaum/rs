@@ -296,12 +296,12 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
     }});
 
     const candleSeries = candleChart.addSeries(LightweightCharts.CandlestickSeries, {{
-      upColor: '#26a69a',
-      downColor: '#ef5350',
-      borderDownColor: '#ef5350',
-      borderUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
-      wickUpColor: '#26a69a',
+      upColor: '#ef5350',
+      downColor: '#2196f3',
+      borderDownColor: '#2196f3',
+      borderUpColor: '#ef5350',
+      wickDownColor: '#2196f3',
+      wickUpColor: '#ef5350',
     }});
     candleSeries.setData(candleData);
 
