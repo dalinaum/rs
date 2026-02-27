@@ -86,7 +86,7 @@ def calc_score(data, day=-1):
         return -1
 
 
-def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentile_series):
+def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
     """종목별 캔들차트 + RS 백분위 추이 HTML 파일 생성."""
     # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
     candle_data = []
@@ -141,7 +141,7 @@ def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentil
     rs_json = json.dumps(rs_series)
 
     title = f"{name} ({code})"
-    site_title = f"달리나음의 {display_name} 상대 강도"
+    site_title = "달리나음의 상대 강도"
 
     html = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -498,7 +498,7 @@ def run_market_analysis(market_key, target_date=None):
                     'value': int(daily_percentiles[date_str][code])
                 })
         try:
-            generate_chart_html(code, name, data, charts_dir, display_name, rs_percentile_series)
+            generate_chart_html(code, name, data, charts_dir, rs_percentile_series)
             print(f"{code} 차트 생성 완료")
         except Exception as e:
             print(f"{code} 차트 생성 실패: {e}")
