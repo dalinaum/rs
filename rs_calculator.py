@@ -86,7 +86,7 @@ def calc_score(data, day=-1):
         return -1
 
 
-def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentile_series):
+def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
     """종목별 캔들차트 + RS 백분위 추이 HTML 파일 생성."""
     # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
     candle_data = []
@@ -141,7 +141,7 @@ def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentil
     rs_json = json.dumps(rs_series)
 
     title = f"{name} ({code})"
-    site_title = f"달리나음의 {display_name} 상대 강도"
+    site_title = "달리나음의 상대 강도"
 
     html = f"""<!DOCTYPE html>
 <html lang="ko">
@@ -357,7 +357,7 @@ def generate_chart_html(code, name, data, charts_dir, display_name, rs_percentil
         f.write(html)
 
 
-def run_market_analysis(market_key):
+def run_market_analysis(market_key, target_date=None):
     config = MARKET_CONFIGS[market_key]
     target = config['target']
     list_filename = config['list_filename']
@@ -366,13 +366,23 @@ def run_market_analysis(market_key):
     fetch_message = config['fetch_message']
 
     print(fetch_message)
-    stock_list = fdr.StockListing(target)
-    stock_list.to_csv(list_filename)
+    try:
+        stock_list = fdr.StockListing(target)
+        stock_list.to_csv(list_filename)
+    except Exception as e:
+        print(f"StockListing 실패: {e}")
+        print(f"기존 {list_filename}을 사용합니다.")
+        stock_list = pd.read_csv(list_filename, index_col=0)
+        stock_list['Code'] = stock_list['Code'].astype(str).str.zfill(6)
 
     print(stock_list.shape)
 
-    now = dt.datetime.now()
-    date = now.strftime("%Y-%m-%d")
+    if target_date:
+        now = dt.datetime.strptime(target_date, "%Y-%m-%d")
+        date = target_date
+    else:
+        now = dt.datetime.now()
+        date = now.strftime("%Y-%m-%d")
 
     data_dir = os.path.join(DATA_DIR_ROOT, date)
     os.makedirs(data_dir, exist_ok=True)
@@ -488,7 +498,7 @@ def run_market_analysis(market_key):
                     'value': int(daily_percentiles[date_str][code])
                 })
         try:
-            generate_chart_html(code, name, data, charts_dir, display_name, rs_percentile_series)
+            generate_chart_html(code, name, data, charts_dir, rs_percentile_series)
             print(f"{code} 차트 생성 완료")
         except Exception as e:
             print(f"{code} 차트 생성 실패: {e}")
