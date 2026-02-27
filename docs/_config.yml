@@ -1,6 +1,7 @@
 remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 lang: ko-KR
 timezone: Asia/Seoul
+baseurl: /rs
 
 title: 달리나음의 코스피 상대 강도
 repository: dalinaum/turtle
