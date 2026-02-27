@@ -96,12 +96,15 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
             continue
         date_str = str(value).split(' ')[0]
         try:
+            o, h, l, c = float(row['Open']), float(row['High']), float(row['Low']), float(row['Close'])
+            if o <= 0 or h <= 0 or l <= 0 or c <= 0:
+                continue
             candle_data.append({
                 'time': date_str,
-                'open': float(row['Open']),
-                'high': float(row['High']),
-                'low': float(row['Low']),
-                'close': float(row['Close']),
+                'open': o,
+                'high': h,
+                'low': l,
+                'close': c,
             })
         except (ValueError, KeyError):
             continue
@@ -296,12 +299,12 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
     }});
 
     const candleSeries = candleChart.addSeries(LightweightCharts.CandlestickSeries, {{
-      upColor: '#26a69a',
-      downColor: '#ef5350',
-      borderDownColor: '#ef5350',
-      borderUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
-      wickUpColor: '#26a69a',
+      upColor: '#ef5350',
+      downColor: '#2196f3',
+      borderDownColor: '#2196f3',
+      borderUpColor: '#ef5350',
+      wickDownColor: '#2196f3',
+      wickUpColor: '#ef5350',
     }});
     candleSeries.setData(candleData);
 
