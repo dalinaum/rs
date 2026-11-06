@@ -3,7 +3,12 @@ name: Scrap KOSPI stock data and calculate RS rating all.
 on:
   schedule:
     - cron: "45 6 * * 1-5"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "계산 기준일 (YYYY-MM-DD). 비우면 오늘."
+        required: false
+        default: ""
   
 jobs:
   build:
@@ -19,11 +24,11 @@ jobs:
     - name: Install dependencies
       run: uv sync
     - name: Run KOSPI script
-      run: uv run ./calc-kospi-rs.py
+      run: uv run ./calc-kospi-rs.py ${{ inputs.date }}
     - name: Run KOSDAQ script
-      run: uv run ./calc-kosdaq-rs.py
+      run: uv run ./calc-kosdaq-rs.py ${{ inputs.date }}
     - name: Run KRX script
-      run: uv run ./calc-krx-rs.py
+      run: uv run ./calc-krx-rs.py ${{ inputs.date }}
     - name: Commits
       run: |
         git config --local user.email "dalinaum@gmail.com"

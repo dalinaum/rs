@@ -415,6 +415,10 @@ def run_market_analysis(market_key, target_date=None):
         filename = f"{i.Code}-{i.Name}.csv"
         file_path = os.path.join(data_dir, filename)
         data = pd.read_csv(file_path)
+        if target_date:
+            # 기준일 이후 행을 잘라내 과거 날짜로 재계산할 수 있게 한다.
+            data = data[pd.to_datetime(data['Date'], format='ISO8601').dt.normalize() <= pd.Timestamp(target_date)]
+            data = data.reset_index(drop=True)
         today_score = calc_score(data)
         yesterday_score = calc_score(data, -2)
 
