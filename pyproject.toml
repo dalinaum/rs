@@ -2,11 +2,11 @@
 name = "rs"
 version = "0.1.0"
 description = "KOSPI/KOSDAQ Relative Strength Rating Calculator"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    "finance-datareader>=0.9.102",
+    "finance-datareader>=0.9.202",
     "numpy>=2.0,<3",
-    "pandas>=2.0,<3",
+    "pandas>=3.0,<4",
 ]
 
 [dependency-groups]
