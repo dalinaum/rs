@@ -1,0 +1,243 @@
+---
+layout: single
+title: "코스닥 미너비니 트렌드 템플릿 2023년 7월 10일"
+date: 2023-07-10 07:16:04 +0900
+categories: minervini
+---
+마크 미니버니(Mark Minervini)의 트렌드 템플릿(Trend Template)을 계산하여 만족한 결과만 나열하였습니다. 필터링에 걸린 종목은 아래에 나열되어 있지 않습니다.
+
+아래 기술된 미너비니 트렌드 템플릿 계산 방식으로 계산합니다. 계산 방법에서 RS 값이 최소 70이상이고 80, 90이면 좋다고 하고 있는데 70이상만 결과로 표기하고 80이나 90에 대해서 특별히 더 자세히 보이지는 않습니다.
+
+## 미너비니 트렌드 템플릿
+
+|종목코드|이름|종가|RS|신고가,신저가|MA50,150,200|
+|------|---|---|--|---------|------------|
+|[139050](https://finance.daum.net/quotes/A139050)|시티랩스|5600|99|6570, 340|1414, 833, 784|
+|[086520](https://finance.daum.net/quotes/A086520)|에코프로|965000|98|980000, 64302|681180, 412068, 341151|
+|[094170](https://finance.daum.net/quotes/A094170)|동운아나텍|30250|98|30250, 6990|11915, 10057, 9953|
+|[322510](https://finance.daum.net/quotes/A322510)|제이엘케이|15900|98|18400, 3150|10842, 6719, 5893|
+|[900250](https://finance.daum.net/quotes/A900250)|크리스탈신소재|3600|98|4485, 735|3199, 1759, 1543|
+|[317240](https://finance.daum.net/quotes/A317240)|TS트릴리온|1706|97|2025, 501|868, 692, 690|
+|[241710](https://finance.daum.net/quotes/A241710)|코스메카코리아|26600|97|26600, 6500|17374, 12269, 11076|
+|[073640](https://finance.daum.net/quotes/A073640)|테라사이언스|6030|97|6830, 1350|4742, 3114, 2724|
+|[281740](https://finance.daum.net/quotes/A281740)|레이크머티리얼즈|19780|97|25250, 4090|17309, 10335, 9122|
+|[338220](https://finance.daum.net/quotes/A338220)|뷰노|29200|97|36800, 5070|24712, 15996, 13488|
+|[257720](https://finance.daum.net/quotes/A257720)|실리콘투|7360|97|7910, 1715|5673, 3907, 3462|
+|[140410](https://finance.daum.net/quotes/A140410)|메지온|39250|97|46850, 12450|29818, 20082, 18431|
+|[366330](https://finance.daum.net/quotes/A366330)|신한제7호스팩|5030|97|6380, 1990|3498, 2566, 2439|
+|[161570](https://finance.daum.net/quotes/A161570)|THE MIDONG|2890|97|2890, 918|2075, 1478, 1365|
+|[009520](https://finance.daum.net/quotes/A009520)|포스코엠텍|25000|97|32800, 5220|24130, 16431, 14102|
+|[096350](https://finance.daum.net/quotes/A096350)|대창솔루션|715|96|798, 225|514, 379, 360|
+|[950140](https://finance.daum.net/quotes/A950140)|잉글우드랩|10240|96|10240, 3870|7893, 5860, 5452|
+|[053610](https://finance.daum.net/quotes/A053610)|프로텍|58300|96|61200, 19700|35749, 28611, 27003|
+|[013310](https://finance.daum.net/quotes/A013310)|아진산업|7230|96|7550, 2315|5708, 3833, 3566|
+|[117730](https://finance.daum.net/quotes/A117730)|티로보틱스|19450|96|23250, 5810|17408, 11414, 10166|
+|[363250](https://finance.daum.net/quotes/A363250)|진시스템|27250|96|30200, 5050|21461, 13107, 11375|
+|[036620](https://finance.daum.net/quotes/A036620)|감성코퍼레이션|4620|96|4620, 1335|3672, 2617, 2345|
+|[900290](https://finance.daum.net/quotes/A900290)|GRT|4785|96|5540, 1230|4179, 3290, 3153|
+|[015750](https://finance.daum.net/quotes/A015750)|성우하이텍|14200|96|14200, 3950|9879, 7516, 6959|
+|[065510](https://finance.daum.net/quotes/A065510)|휴비츠|21400|96|23700, 8330|19821, 13942, 12973|
+|[031980](https://finance.daum.net/quotes/A031980)|피에스케이홀딩스|18900|96|24300, 6700|13303, 10078, 9408|
+|[336570](https://finance.daum.net/quotes/A336570)|원텍|9970|95|10840, 2365|8860, 6446, 5560|
+|[335890](https://finance.daum.net/quotes/A335890)|비올|6880|95|7590, 1700|6622, 5034, 4308|
+|[022100](https://finance.daum.net/quotes/A022100)|포스코DX|15900|95|18180, 4995|13571, 9667, 8768|
+|[038110](https://finance.daum.net/quotes/A038110)|에코플라스틱|7210|95|8060, 2425|6780, 4725, 4377|
+|[196300](https://finance.daum.net/quotes/A196300)|애니젠|15560|95|17490, 6600|14882, 10023, 9533|
+|[217190](https://finance.daum.net/quotes/A217190)|제너셈|13730|95|16710, 4690|12499, 8492, 7668|
+|[042520](https://finance.daum.net/quotes/A042520)|한스바이오메드|25300|95|25300, 9130|16404, 13773, 12760|
+|[059210](https://finance.daum.net/quotes/A059210)|메타바이오메드|4330|95|5060, 2050|3742, 2831, 2680|
+|[033100](https://finance.daum.net/quotes/A033100)|제룡전기|20500|95|20600, 5960|16966, 13558, 12656|
+|[035900](https://finance.daum.net/quotes/A035900)|JYP Ent.|128100|95|138800, 47450|118724, 87577, 79984|
+|[247540](https://finance.daum.net/quotes/A247540)|에코프로비엠|285000|95|296000, 88100|253340, 191824, 170198|
+|[060280](https://finance.daum.net/quotes/A060280)|큐렉소|18450|95|20250, 6350|12958, 10317, 9546|
+|[103230](https://finance.daum.net/quotes/A103230)|에스앤더블류|6490|95|6860, 2505|4621, 3403, 3179|
+|[012860](https://finance.daum.net/quotes/A012860)|모베이스전자|2900|94|3200, 1200|2621, 1905, 1766|
+|[161580](https://finance.daum.net/quotes/A161580)|필옵틱스|15900|94|15900, 6680|10643, 9262, 8837|
+|[094360](https://finance.daum.net/quotes/A094360)|칩스앤미디어|35150|94|41200, 13550|28149, 21731, 20357|
+|[214680](https://finance.daum.net/quotes/A214680)|디알텍|3315|94|4000, 1360|3090, 2191, 2002|
+|[079810](https://finance.daum.net/quotes/A079810)|디이엔티|18530|94|20800, 6210|18109, 15011, 13753|
+|[072770](https://finance.daum.net/quotes/A072770)|율호|3235|94|3420, 1315|2991, 2299, 2165|
+|[367480](https://finance.daum.net/quotes/A367480)|유안타제8호스팩|3625|94|4615, 2070|3187, 2526, 2423|
+|[114840](https://finance.daum.net/quotes/A114840)|아이패밀리에스씨|25550|93|27000, 8860|23224, 17040, 15267|
+|[08537M](https://finance.daum.net/quotes/A08537M)|루트로닉3우C|52000|93|54200, 21800|43799, 36369, 33529|
+|[211050](https://finance.daum.net/quotes/A211050)|인카금융서비스|15090|93|16670, 5640|13479, 10140, 9214|
+|[019540](https://finance.daum.net/quotes/A019540)|일지테크|4645|93|4840, 2175|3856, 3136, 2941|
+|[352480](https://finance.daum.net/quotes/A352480)|씨앤씨인터내셔널|46100|93|52700, 16700|45246, 36407, 32881|
+|[261200](https://finance.daum.net/quotes/A261200)|덴티스|14670|93|14670, 6770|11033, 9382, 8917|
+|[214430](https://finance.daum.net/quotes/A214430)|아이쓰리시스템|32000|93|32600, 15750|24789, 21470, 20384|
+|[087010](https://finance.daum.net/quotes/A087010)|펩트론|13530|93|14600, 7150|9015, 8193, 8187|
+|[085370](https://finance.daum.net/quotes/A085370)|루트로닉|36450|93|36450, 15600|30886, 25612, 23711|
+|[103840](https://finance.daum.net/quotes/A103840)|우양|4630|92|4990, 2490|3681, 3086, 3022|
+|[226400](https://finance.daum.net/quotes/A226400)|오스테오닉|5850|92|6850, 2340|5025, 3974, 3614|
+|[214150](https://finance.daum.net/quotes/A214150)|클래시스|30550|92|33700, 13400|28198, 22301, 20804|
+|[109610](https://finance.daum.net/quotes/A109610)|에스와이|5490|92|5550, 2790|4134, 3812, 3737|
+|[215360](https://finance.daum.net/quotes/A215360)|우리산업|23250|92|24500, 11400|18728, 16017, 15634|
+|[053060](https://finance.daum.net/quotes/A053060)|세동|2675|92|2675, 1030|2112, 1863, 1696|
+|[064290](https://finance.daum.net/quotes/A064290)|인텍플러스|31450|92|34500, 13050|22950, 18867, 17708|
+|[024910](https://finance.daum.net/quotes/A024910)|경창산업|3500|92|4120, 1870|3377, 2551, 2415|
+|[214450](https://finance.daum.net/quotes/A214450)|파마리서치|125200|92|143700, 55500|121744, 90762, 83407|
+|[307870](https://finance.daum.net/quotes/A307870)|비투엔|3090|92|3090, 1780|2229, 2142, 2124|
+|[018290](https://finance.daum.net/quotes/A018290)|브이티지엠피|9520|91|10050, 4765|7429, 6246, 5991|
+|[008290](https://finance.daum.net/quotes/A008290)|원풍물산|1277|91|1340, 532|1042, 911, 839|
+|[040300](https://finance.daum.net/quotes/A040300)|YTN|7130|91|9390, 3500|6561, 6522, 6468|
+|[200670](https://finance.daum.net/quotes/A200670)|휴메딕스|36350|91|36350, 18450|31523, 27725, 25971|
+|[214370](https://finance.daum.net/quotes/A214370)|케어젠|229500|91|259500, 92100|212216, 183433, 165177|
+|[409570](https://finance.daum.net/quotes/A409570)|한국제10호스팩|3220|91|3710, 2015|3057, 2369, 2298|
+|[215790](https://finance.daum.net/quotes/A215790)|알비케이그룹|2070|91|2215, 1200|1500, 1365, 1349|
+|[048430](https://finance.daum.net/quotes/A048430)|유라테크|11300|91|13100, 5360|9447, 8411, 8030|
+|[122640](https://finance.daum.net/quotes/A122640)|예스티|12600|91|13120, 6170|11458, 9526, 9271|
+|[086710](https://finance.daum.net/quotes/A086710)|선진뷰티사이언스|9500|90|10560, 4705|8612, 7389, 6919|
+|[382800](https://finance.daum.net/quotes/A382800)|지앤비에스 에코|22050|90|22250, 10700|19926, 16706, 15562|
+|[082920](https://finance.daum.net/quotes/A082920)|비츠로셀|22800|90|23950, 10250|19732, 17016, 15869|
+|[254120](https://finance.daum.net/quotes/A254120)|자비스|3165|90|4130, 1491|2880, 2421, 2248|
+|[251970](https://finance.daum.net/quotes/A251970)|펌텍코리아|21900|90|22650, 14200|20684, 17750, 17286|
+|[036010](https://finance.daum.net/quotes/A036010)|아비코전자|15540|90|18420, 8770|15256, 12394, 11994|
+|[054950](https://finance.daum.net/quotes/A054950)|제이브이엠|27300|90|29850, 16000|25084, 21287, 20469|
+|[077360](https://finance.daum.net/quotes/A077360)|덕산하이메탈|9020|90|9240, 4555|6599, 5982, 5943|
+|[083930](https://finance.daum.net/quotes/A083930)|아바코|22250|90|23350, 9990|19112, 16561, 16035|
+|[356860](https://finance.daum.net/quotes/A356860)|티엘비|26100|90|30300, 16025|22874, 20043, 19948|
+|[251630](https://finance.daum.net/quotes/A251630)|브이원텍|11930|89|14140, 5760|11408, 8971, 8366|
+|[093520](https://finance.daum.net/quotes/A093520)|매커스|13560|89|17020, 5620|13239, 10786, 9859|
+|[317870](https://finance.daum.net/quotes/A317870)|엔바이오니아|14160|89|16160, 5180|13238, 9415, 8685|
+|[073010](https://finance.daum.net/quotes/A073010)|케이에스피|2750|89|2925, 1640|2210, 1938, 1912|
+|[014940](https://finance.daum.net/quotes/A014940)|오리엔탈정공|4015|89|4155, 2150|3573, 2920, 2878|
+|[173940](https://finance.daum.net/quotes/A173940)|에프엔씨엔터|8060|89|8200, 4365|6443, 5849, 5573|
+|[043370](https://finance.daum.net/quotes/A043370)|피에이치에이|10880|89|11350, 5650|10082, 8298, 7812|
+|[399720](https://finance.daum.net/quotes/A399720)|가온칩스|33600|89|38700, 13500|29439, 25591, 24600|
+|[219130](https://finance.daum.net/quotes/A219130)|타이거일렉|27950|89|30650, 13000|24503, 21933, 21493|
+|[272110](https://finance.daum.net/quotes/A272110)|케이엔제이|21950|88|26900, 10300|21294, 17386, 15954|
+|[322310](https://finance.daum.net/quotes/A322310)|오로스테크놀로지|22800|88|28800, 9240|18700, 17212, 15736|
+|[212560](https://finance.daum.net/quotes/A212560)|네오오토|9130|88|10640, 5600|8793, 7421, 7287|
+|[159010](https://finance.daum.net/quotes/A159010)|아스플로|14600|88|15700, 6369|14137, 12495, 11683|
+|[045970](https://finance.daum.net/quotes/A045970)|코아시아|10080|88|11190, 4845|9481, 8274, 7786|
+|[164060](https://finance.daum.net/quotes/A164060)|이루다|9140|88|10900, 4635|8195, 7239, 6726|
+|[067310](https://finance.daum.net/quotes/A067310)|하나마이크론|19960|88|22350, 9050|18317, 14096, 13138|
+|[144960](https://finance.daum.net/quotes/A144960)|뉴파워프라즈마|6400|88|7130, 3240|5883, 4910, 4567|
+|[095340](https://finance.daum.net/quotes/A095340)|ISC|49500|88|62300, 29550|48329, 39842, 38140|
+|[147830](https://finance.daum.net/quotes/A147830)|제룡산업|4730|87|4855, 2600|4434, 3796, 3595|
+|[123410](https://finance.daum.net/quotes/A123410)|코리아에프티|4020|87|4220, 2305|3527, 3008, 2991|
+|[175140](https://finance.daum.net/quotes/A175140)|인포마크|10530|87|11700, 4910|8803, 7750, 7342|
+|[315640](https://finance.daum.net/quotes/A315640)|딥노이드|11370|87|14640, 5370|10557, 9300, 8464|
+|[282880](https://finance.daum.net/quotes/A282880)|코윈테크|38100|87|38650, 22341|33531, 29033, 28085|
+|[368770](https://finance.daum.net/quotes/A368770)|파이버프로|4555|87|5100, 2095|3909, 3156, 2998|
+|[297890](https://finance.daum.net/quotes/A297890)|HB솔루션|19250|87|19590, 11750|16144, 14711, 14585|
+|[051360](https://finance.daum.net/quotes/A051360)|토비스|14000|87|14560, 7910|12741, 11246, 10580|
+|[044490](https://finance.daum.net/quotes/A044490)|태웅|16900|87|17240, 8700|15045, 12127, 11567|
+|[140860](https://finance.daum.net/quotes/A140860)|파크시스템스|173700|86|193600, 89300|164854, 141757, 132466|
+|[096630](https://finance.daum.net/quotes/A096630)|에스코넥|1788|86|2100, 813|1648, 1379, 1268|
+|[222160](https://finance.daum.net/quotes/A222160)|바이옵트로|7630|86|8950, 4160|6082, 5564, 5413|
+|[090410](https://finance.daum.net/quotes/A090410)|덕신하우징|2635|86|2895, 1445|2141, 1996, 1951|
+|[013030](https://finance.daum.net/quotes/A013030)|하이록코리아|27700|86|28250, 16250|23758, 22589, 22218|
+|[200710](https://finance.daum.net/quotes/A200710)|에이디테크놀로지|21950|86|24600, 12050|19693, 18346, 17556|
+|[048260](https://finance.daum.net/quotes/A048260)|오스템임플란트|188000|86|189100, 92500|187380, 173394, 158353|
+|[222040](https://finance.daum.net/quotes/A222040)|코스맥스엔비티|6080|85|6180, 3835|5201, 4664, 4541|
+|[099190](https://finance.daum.net/quotes/A099190)|아이센스|22150|85|24700, 13661|19406, 17635, 17443|
+|[314930](https://finance.daum.net/quotes/A314930)|바이오다인|40600|85|40600, 17450|37022, 30090, 27637|
+|[307280](https://finance.daum.net/quotes/A307280)|원바이오젠|2260|85|2550, 1275|2194, 1918, 1825|
+|[311320](https://finance.daum.net/quotes/A311320)|지오엘리먼트|12940|85|15250, 7918|11226, 10666, 10653|
+|[038010](https://finance.daum.net/quotes/A038010)|제일테크노스|10190|85|10770, 5840|9129, 8101, 7910|
+|[065650](https://finance.daum.net/quotes/A065650)|메디프론|1937|85|2230, 1110|1605, 1534, 1490|
+|[041520](https://finance.daum.net/quotes/A041520)|이라이콤|7070|85|7280, 4600|6024, 5490, 5439|
+|[089790](https://finance.daum.net/quotes/A089790)|제이티|10050|85|11110, 5890|8663, 8117, 7842|
+|[066360](https://finance.daum.net/quotes/A066360)|체리부로|1683|85|1683, 878|1336, 1230, 1163|
+|[170790](https://finance.daum.net/quotes/A170790)|파이오링크|16780|84|16950, 9990|14752, 13983, 13281|
+|[294090](https://finance.daum.net/quotes/A294090)|이오플로우|28000|84|28600, 12400|27009, 22615, 21044|
+|[101360](https://finance.daum.net/quotes/A101360)|에코앤드림|39800|84|51800, 22200|37982, 34664, 33001|
+|[216080](https://finance.daum.net/quotes/A216080)|제테마|21600|84|23400, 10000|20350, 18616, 17179|
+|[039840](https://finance.daum.net/quotes/A039840)|디오|33450|84|34650, 18150|31048, 25634, 24190|
+|[039030](https://finance.daum.net/quotes/A039030)|이오테크닉스|106400|84|116000, 58700|95850, 82218, 78083|
+|[400560](https://finance.daum.net/quotes/A400560)|하나금융20호스팩|3020|84|3175, 2115|2865, 2438, 2394|
+|[313760](https://finance.daum.net/quotes/A313760)|윌링스|11160|83|13540, 6700|10772, 8811, 8587|
+|[079370](https://finance.daum.net/quotes/A079370)|제우스|34100|83|38500, 19700|31740, 29750, 28937|
+|[290650](https://finance.daum.net/quotes/A290650)|엘앤씨바이오|35500|83|36950, 17500|33382, 27273, 26350|
+|[277880](https://finance.daum.net/quotes/A277880)|티에스아이|14880|83|16370, 7930|12792, 11243, 10658|
+|[092870](https://finance.daum.net/quotes/A092870)|엑시콘|12960|83|13940, 8000|11340, 10155, 9906|
+|[128660](https://finance.daum.net/quotes/A128660)|피제이메탈|4880|83|5590, 3080|4470, 3914, 3849|
+|[063570](https://finance.daum.net/quotes/A063570)|한국전자금융|6470|83|7520, 4300|6073, 5321, 5176|
+|[032980](https://finance.daum.net/quotes/A032980)|바이온|1717|83|1820, 870|1384, 1312, 1224|
+|[302430](https://finance.daum.net/quotes/A302430)|이노메트리|15590|83|17120, 8780|14917, 14503, 13709|
+|[060370](https://finance.daum.net/quotes/A060370)|KT서브마린|7840|82|8220, 4810|7363, 6347, 6226|
+|[317850](https://finance.daum.net/quotes/A317850)|대모|14180|82|17050, 6820|13775, 13471, 13084|
+|[092460](https://finance.daum.net/quotes/A092460)|한라IMS|7140|82|7530, 4500|6930, 6181, 5907|
+|[252990](https://finance.daum.net/quotes/A252990)|샘씨엔에스|6200|82|7590, 3710|5371, 4773, 4594|
+|[060230](https://finance.daum.net/quotes/A060230)|소니드|5270|82|7000, 3090|5046, 4839, 4609|
+|[199820](https://finance.daum.net/quotes/A199820)|제일전기공업|14000|82|15300, 8970|11758, 10777, 10525|
+|[225570](https://finance.daum.net/quotes/A225570)|넥슨게임즈|21150|82|24900, 12000|20962, 17252, 16633|
+|[078350](https://finance.daum.net/quotes/A078350)|한양디지텍|15250|81|17870, 9670|14408, 13102, 12670|
+|[187790](https://finance.daum.net/quotes/A187790)|나노|1485|81|1520, 969|1326, 1250, 1222|
+|[023160](https://finance.daum.net/quotes/A023160)|태광|19320|81|19700, 11650|18191, 16880, 16833|
+|[241790](https://finance.daum.net/quotes/A241790)|오션브릿지|15840|81|17000, 10400|15468, 14351, 14183|
+|[092730](https://finance.daum.net/quotes/A092730)|네오팜|23650|81|25950, 16000|21796, 19865, 19350|
+|[054450](https://finance.daum.net/quotes/A054450)|텔레칩스|18590|81|21700, 11050|18481, 15630, 15014|
+|[191410](https://finance.daum.net/quotes/A191410)|육일씨엔에쓰|4075|81|4500, 2695|3826, 3264, 3213|
+|[052460](https://finance.daum.net/quotes/A052460)|아이크래프트|4170|81|5330, 2245|3951, 3470, 3248|
+|[095270](https://finance.daum.net/quotes/A095270)|웨이브일렉트로|6430|81|7400, 3845|6409, 5371, 5160|
+|[032680](https://finance.daum.net/quotes/A032680)|소프트센|912|80|1040, 552|797, 750, 712|
+|[234300](https://finance.daum.net/quotes/A234300)|에스트래픽|5200|80|6570, 3100|4929, 4504, 4358|
+|[382480](https://finance.daum.net/quotes/A382480)|지아이텍|4765|80|5300, 2885|4495, 4216, 4175|
+|[027580](https://finance.daum.net/quotes/A027580)|상보|2045|80|2530, 1260|1761, 1548, 1524|
+|[079960](https://finance.daum.net/quotes/A079960)|동양이엔피|18710|80|20750, 11400|17890, 16401, 15630|
+|[287410](https://finance.daum.net/quotes/A287410)|제이시스메디칼|9800|80|11720, 6050|9686, 9104, 8588|
+|[089890](https://finance.daum.net/quotes/A089890)|코세스|12510|80|15550, 6810|11821, 11481, 10698|
+|[137400](https://finance.daum.net/quotes/A137400)|피엔티|63400|79|63400, 37200|54048, 49490, 48128|
+|[060380](https://finance.daum.net/quotes/A060380)|동양에스텍|2745|79|2815, 1860|2384, 2220, 2214|
+|[170030](https://finance.daum.net/quotes/A170030)|현대공업|9040|79|9610, 5280|8731, 7525, 7185|
+|[310870](https://finance.daum.net/quotes/A310870)|디와이씨|2090|79|2195, 1350|2058, 1870, 1780|
+|[297090](https://finance.daum.net/quotes/A297090)|씨에스베어링|13580|79|14740, 7230|12100, 10566, 10073|
+|[053980](https://finance.daum.net/quotes/A053980)|오상자이엘|6400|79|7860, 4125|5958, 5418, 5193|
+|[321260](https://finance.daum.net/quotes/A321260)|프로이천|3195|78|3565, 1720|2907, 2692, 2617|
+|[041920](https://finance.daum.net/quotes/A041920)|메디아나|5560|78|6220, 3780|5129, 5126, 4997|
+|[285490](https://finance.daum.net/quotes/A285490)|노바텍|34700|78|39500, 18100|32503, 27540, 25757|
+|[025320](https://finance.daum.net/quotes/A025320)|시노펙스|3550|78|3595, 2283|3112, 2853, 2792|
+|[114810](https://finance.daum.net/quotes/A114810)|한솔아이원스|9080|78|10200, 6050|8746, 7947, 7679|
+|[053290](https://finance.daum.net/quotes/A053290)|NE능률|5890|78|6710, 3605|4952, 4816, 4647|
+|[092070](https://finance.daum.net/quotes/A092070)|디엔에프|18800|78|20200, 11900|16997, 15947, 15340|
+|[126640](https://finance.daum.net/quotes/A126640)|화신정공|1983|77|2080, 1310|1896, 1717, 1674|
+|[006920](https://finance.daum.net/quotes/A006920)|모헨즈|4775|77|5750, 3160|4326, 4050, 3990|
+|[053450](https://finance.daum.net/quotes/A053450)|세코닉스|8320|77|9020, 4925|7490, 6518, 6371|
+|[323280](https://finance.daum.net/quotes/A323280)|태성|2375|77|2845, 1270|2202, 2076, 1945|
+|[154040](https://finance.daum.net/quotes/A154040)|다산솔루에타|3245|77|3560, 2000|2788, 2724, 2667|
+|[098120](https://finance.daum.net/quotes/A098120)|마이크로컨텍솔|7730|76|8740, 4700|7504, 6611, 6311|
+|[196490](https://finance.daum.net/quotes/A196490)|디에이테크놀로지|4915|76|5280, 3040|4707, 4034, 3970|
+|[043150](https://finance.daum.net/quotes/A043150)|바텍|38550|76|43700, 29100|36418, 34325, 33560|
+|[053270](https://finance.daum.net/quotes/A053270)|구영테크|3580|76|3950, 2230|3476, 2941, 2860|
+|[149980](https://finance.daum.net/quotes/A149980)|하이로닉|7870|76|9240, 4655|7662, 7152, 6719|
+|[131970](https://finance.daum.net/quotes/A131970)|두산테스나|38800|75|43500, 20450|38165, 34632, 32572|
+|[146320](https://finance.daum.net/quotes/A146320)|비씨엔씨|19750|75|22500, 13650|19104, 17139, 16922|
+|[110990](https://finance.daum.net/quotes/A110990)|디아이티|8620|75|9930, 5340|8339, 7397, 7054|
+|[035890](https://finance.daum.net/quotes/A035890)|서희건설|1560|75|1619, 1065|1427, 1277, 1258|
+|[192390](https://finance.daum.net/quotes/A192390)|윈하이텍|4370|74|4825, 2900|4049, 3710, 3669|
+|[396270](https://finance.daum.net/quotes/A396270)|넥스트칩|13000|74|16560, 6520|12408, 10479, 10009|
+|[017250](https://finance.daum.net/quotes/A017250)|인터엠|1495|74|1700, 1105|1442, 1367, 1340|
+|[093320](https://finance.daum.net/quotes/A093320)|케이아이엔엑스|63100|74|74000, 46650|61452, 60281, 58278|
+|[241770](https://finance.daum.net/quotes/A241770)|메카로|12720|74|13450, 9750|11726, 11443, 11270|
+|[195500](https://finance.daum.net/quotes/A195500)|마니커에프앤지|3995|74|4715, 2940|3965, 3539, 3515|
+|[053160](https://finance.daum.net/quotes/A053160)|프리엠스|9700|74|10000, 5890|8896, 7818, 7547|
+|[036000](https://finance.daum.net/quotes/A036000)|예림당|2220|73|2310, 1560|2121, 2005, 1927|
+|[005290](https://finance.daum.net/quotes/A005290)|동진쎄미켐|36850|73|42100, 26300|35755, 33780, 32942|
+|[122690](https://finance.daum.net/quotes/A122690)|서진오토모티브|4020|73|4580, 2370|3943, 3451, 3331|
+|[037330](https://finance.daum.net/quotes/A037330)|인지디스플레|2175|72|2355, 1475|2121, 1943, 1876|
+|[178320](https://finance.daum.net/quotes/A178320)|서진시스템|18590|72|21000, 13550|17681, 17499, 17042|
+|[036930](https://finance.daum.net/quotes/A036930)|주성엔지니어링|17290|72|19380, 10410|17004, 14276, 13773|
+|[166090](https://finance.daum.net/quotes/A166090)|하나머티리얼즈|47100|71|52800, 28600|46873, 41055, 39013|
+|[208140](https://finance.daum.net/quotes/A208140)|정다운|2515|71|2640, 1860|2479, 2355, 2286|
+|[083450](https://finance.daum.net/quotes/A083450)|GST|27000|71|30100, 18150|26776, 24326, 23409|
+|[126880](https://finance.daum.net/quotes/A126880)|제이엔케이히터|6680|71|7200, 4610|6605, 6198, 6074|
+|[066900](https://finance.daum.net/quotes/A066900)|디에이피|3450|71|3560, 2490|3115, 2987, 2934|
+|[148150](https://finance.daum.net/quotes/A148150)|세경하이테크|18510|70|20700, 10850|18062, 15587, 14922|
+|[097800](https://finance.daum.net/quotes/A097800)|윈팩|1705|70|1962, 1195|1664, 1565, 1509|
+|[045390](https://finance.daum.net/quotes/A045390)|대아티아이|3555|70|4140, 2465|3346, 3311, 3259|
+|[263690](https://finance.daum.net/quotes/A263690)|디알젬|11350|70|12100, 7950|11037, 10989, 10624|
+
+## 미너비니 트렌드 템플릿 계산 방식
+
+"Trade Like a Stock Market Wizard: How to Achieve Super Performance in Stocks in Any Market"에서
+
+ 1. The current stock price is above both the 150-day (30-week) and the 200-day (40-week) moving average price lines.
+ 1. The 150-day moving average is above the 200-day moving average.
+ 1. The 200-day moving average line is trending up for at least 1 month (preferably 4–5 months minimum in most cases).
+ 1. The 50-day (10-week) moving average is above both the 150-day and 200-day moving averages.
+ 1. The current stock price is trading above the 50-day moving average.
+ 1. The current stock price is at least 30 percent above its 52-week low. (Many of the best selections will be 100 percent, 300 percent, or greater above their 52-week low before they emerge from a solid consolidation period and mount a large scale advance.)
+ 1. The current stock price is within at least 25 percent of its 52-week high (the closer to a new high the better).
+ 1. The relative strength ranking (as reported in Investor’s Business Daily) is no less than 70, and preferably in the 80s or 90s, which will generally be the case with the better selections.

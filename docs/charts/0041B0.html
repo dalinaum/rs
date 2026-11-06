@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교보18호스팩 (0041B0)</title>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #ffffff;
+      color: #333333;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .masthead {
+      padding: 12px 16px;
+      background: #93c7c4;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .masthead .site-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .masthead .site-title:hover { opacity: 0.85; }
+    .toolbar {
+      padding: 6px 16px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e3eb;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .toolbar h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333333;
+    }
+    .toolbar a {
+      color: #2196f3;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .toolbar a:hover { text-decoration: underline; }
+    .chart-label {
+      padding: 4px 16px;
+      font-size: 11px;
+      color: #787b86;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e3eb;
+      flex-shrink: 0;
+    }
+    .chart-container {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #candle-chart {
+      height: calc(60vh - 40px);
+    }
+    .divider {
+      height: 4px;
+      background: #e0e3eb;
+    }
+    #rs-chart-label {
+      padding: 4px 16px;
+      font-size: 11px;
+      color: #787b86;
+      background: #f8f9fa;
+      border-top: 1px solid #e0e3eb;
+    }
+    #rs-chart {
+      height: calc(40vh - 40px);
+    }
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 3px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="masthead">
+    <a href="../" class="site-title">달리나음의 상대 강도</a>
+  </div>
+  <div class="toolbar">
+    <a href="../">&larr; 목록</a>
+    <h1>교보18호스팩 (0041B0)</h1>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff9800"></div>MA150</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f44336"></div>MA200</div>
+    </div>
+  </div>
+  <div class="chart-label">캔들차트 + 이동평균</div>
+  <div class="chart-container">
+    <div id="candle-chart"></div>
+    <div class="divider"></div>
+    <div id="rs-chart-label">RS 백분위 추이</div>
+    <div id="rs-chart"></div>
+  </div>
+
+  <script>
+    const candleData = [{"time": "2026-08-28", "open": 2020.0, "high": 2020.0, "low": 2010.0, "close": 2010.0}, {"time": "2026-08-31", "open": 2010.0, "high": 2015.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-09-01", "open": 2015.0, "high": 2015.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-09-02", "open": 2015.0, "high": 2015.0, "low": 2000.0, "close": 2015.0}, {"time": "2026-09-03", "open": 2015.0, "high": 2015.0, "low": 2005.0, "close": 2015.0}, {"time": "2026-09-04", "open": 2015.0, "high": 2015.0, "low": 2015.0, "close": 2015.0}, {"time": "2026-09-07", "open": 2005.0, "high": 2010.0, "low": 1991.0, "close": 2005.0}, {"time": "2026-09-08", "open": 2005.0, "high": 2005.0, "low": 1997.0, "close": 2000.0}, {"time": "2026-09-09", "open": 2005.0, "high": 2005.0, "low": 1998.0, "close": 2005.0}, {"time": "2026-09-10", "open": 2010.0, "high": 2010.0, "low": 2005.0, "close": 2005.0}, {"time": "2026-09-11", "open": 2010.0, "high": 2010.0, "low": 2000.0, "close": 2005.0}, {"time": "2026-09-14", "open": 2005.0, "high": 2010.0, "low": 2005.0, "close": 2005.0}, {"time": "2026-09-15", "open": 2005.0, "high": 2005.0, "low": 2000.0, "close": 2005.0}, {"time": "2026-09-16", "open": 2005.0, "high": 2010.0, "low": 2000.0, "close": 2010.0}, {"time": "2026-09-17", "open": 2010.0, "high": 2010.0, "low": 2000.0, "close": 2000.0}, {"time": "2026-09-18", "open": 2010.0, "high": 2010.0, "low": 2000.0, "close": 2010.0}, {"time": "2026-09-21", "open": 2005.0, "high": 2010.0, "low": 2000.0, "close": 2005.0}, {"time": "2026-09-22", "open": 2005.0, "high": 2010.0, "low": 2000.0, "close": 2005.0}, {"time": "2026-09-23", "open": 2015.0, "high": 2015.0, "low": 2000.0, "close": 2005.0}, {"time": "2026-09-28", "open": 2000.0, "high": 2005.0, "low": 2000.0, "close": 2000.0}, {"time": "2026-09-29", "open": 2002.0, "high": 2005.0, "low": 1998.0, "close": 2000.0}, {"time": "2026-09-30", "open": 1993.0, "high": 2015.0, "low": 1993.0, "close": 2010.0}, {"time": "2026-10-01", "open": 2010.0, "high": 2015.0, "low": 2010.0, "close": 2015.0}, {"time": "2026-10-02", "open": 2010.0, "high": 2015.0, "low": 2005.0, "close": 2015.0}, {"time": "2026-10-06", "open": 2015.0, "high": 2015.0, "low": 1999.0, "close": 2010.0}, {"time": "2026-10-07", "open": 2015.0, "high": 2015.0, "low": 2005.0, "close": 2007.0}, {"time": "2026-10-08", "open": 2010.0, "high": 2020.0, "low": 2000.0, "close": 2020.0}, {"time": "2026-10-12", "open": 2015.0, "high": 2015.0, "low": 2000.0, "close": 2015.0}, {"time": "2026-10-13", "open": 2010.0, "high": 2010.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-10-14", "open": 2010.0, "high": 2010.0, "low": 2005.0, "close": 2005.0}, {"time": "2026-10-15", "open": 2015.0, "high": 2015.0, "low": 2005.0, "close": 2005.0}, {"time": "2026-10-16", "open": 2010.0, "high": 2020.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-10-19", "open": 2015.0, "high": 2015.0, "low": 2010.0, "close": 2015.0}, {"time": "2026-10-20", "open": 2015.0, "high": 2035.0, "low": 2010.0, "close": 2010.0}, {"time": "2026-10-21", "open": 2025.0, "high": 2025.0, "low": 2020.0, "close": 2025.0}, {"time": "2026-10-22", "open": 2020.0, "high": 2025.0, "low": 1995.0, "close": 1995.0}, {"time": "2026-10-23", "open": 2010.0, "high": 2015.0, "low": 2005.0, "close": 2005.0}, {"time": "2026-10-26", "open": 2015.0, "high": 2015.0, "low": 2005.0, "close": 2015.0}, {"time": "2026-10-27", "open": 2015.0, "high": 2015.0, "low": 2000.0, "close": 2010.0}, {"time": "2026-10-28", "open": 2005.0, "high": 2010.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-10-29", "open": 2010.0, "high": 2010.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-10-30", "open": 2010.0, "high": 2010.0, "low": 2005.0, "close": 2010.0}, {"time": "2026-11-02", "open": 2007.0, "high": 2010.0, "low": 2005.0, "close": 2005.0}, {"time": "2026-11-03", "open": 2000.0, "high": 2015.0, "low": 2000.0, "close": 2005.0}, {"time": "2026-11-04", "open": 2015.0, "high": 2015.0, "low": 2005.0, "close": 2015.0}];
+    const ma50Data = [{"time": "2026-08-28", "value": 2022.24}, {"time": "2026-08-31", "value": 2021.64}, {"time": "2026-09-01", "value": 2021.14}, {"time": "2026-09-02", "value": 2020.44}, {"time": "2026-09-03", "value": 2019.14}, {"time": "2026-09-04", "value": 2018.44}, {"time": "2026-09-07", "value": 2017.74}, {"time": "2026-09-08", "value": 2017.54}, {"time": "2026-09-09", "value": 2016.84}, {"time": "2026-09-10", "value": 2015.84}, {"time": "2026-09-11", "value": 2015.04}, {"time": "2026-09-14", "value": 2014.44}, {"time": "2026-09-15", "value": 2013.84}, {"time": "2026-09-16", "value": 2013.34}, {"time": "2026-09-17", "value": 2012.64}, {"time": "2026-09-18", "value": 2012.24}, {"time": "2026-09-21", "value": 2011.74}, {"time": "2026-09-22", "value": 2011.34}, {"time": "2026-09-23", "value": 2010.84}, {"time": "2026-09-28", "value": 2010.24}, {"time": "2026-09-29", "value": 2009.74}, {"time": "2026-09-30", "value": 2009.64}, {"time": "2026-10-01", "value": 2009.54}, {"time": "2026-10-02", "value": 2009.44}, {"time": "2026-10-06", "value": 2009.14}, {"time": "2026-10-07", "value": 2008.68}, {"time": "2026-10-08", "value": 2008.68}, {"time": "2026-10-12", "value": 2008.48}, {"time": "2026-10-13", "value": 2008.48}, {"time": "2026-10-14", "value": 2008.38}, {"time": "2026-10-15", "value": 2008.38}, {"time": "2026-10-16", "value": 2008.58}, {"time": "2026-10-19", "value": 2008.88}, {"time": "2026-10-20", "value": 2008.98}, {"time": "2026-10-21", "value": 2009.34}, {"time": "2026-10-22", "value": 2009.04}, {"time": "2026-10-23", "value": 2009.04}, {"time": "2026-10-26", "value": 2009.14}, {"time": "2026-10-27", "value": 2009.24}, {"time": "2026-10-28", "value": 2009.34}, {"time": "2026-10-29", "value": 2009.34}, {"time": "2026-10-30", "value": 2009.24}, {"time": "2026-11-02", "value": 2009.14}, {"time": "2026-11-03", "value": 2009.04}, {"time": "2026-11-04", "value": 2009.14}];
+    const ma150Data = [{"time": "2026-08-28", "value": 2047.81}, {"time": "2026-08-31", "value": 2047.41}, {"time": "2026-09-01", "value": 2047.01}, {"time": "2026-09-02", "value": 2046.61}, {"time": "2026-09-03", "value": 2046.14}, {"time": "2026-09-04", "value": 2045.64}, {"time": "2026-09-07", "value": 2045.11}, {"time": "2026-09-08", "value": 2044.51}, {"time": "2026-09-09", "value": 2044.01}, {"time": "2026-09-10", "value": 2043.54}, {"time": "2026-09-11", "value": 2042.97}, {"time": "2026-09-14", "value": 2042.41}, {"time": "2026-09-15", "value": 2041.84}, {"time": "2026-09-16", "value": 2041.31}, {"time": "2026-09-17", "value": 2040.71}, {"time": "2026-09-18", "value": 2040.17}, {"time": "2026-09-21", "value": 2039.54}, {"time": "2026-09-22", "value": 2038.87}, {"time": "2026-09-23", "value": 2038.24}, {"time": "2026-09-28", "value": 2037.54}, {"time": "2026-09-29", "value": 2036.81}, {"time": "2026-09-30", "value": 2036.21}, {"time": "2026-10-01", "value": 2035.67}, {"time": "2026-10-02", "value": 2035.14}, {"time": "2026-10-06", "value": 2034.67}, {"time": "2026-10-07", "value": 2034.02}, {"time": "2026-10-08", "value": 2033.45}, {"time": "2026-10-12", "value": 2032.85}, {"time": "2026-10-13", "value": 2032.35}, {"time": "2026-10-14", "value": 2031.82}, {"time": "2026-10-15", "value": 2031.39}, {"time": "2026-10-16", "value": 2030.89}, {"time": "2026-10-19", "value": 2030.52}, {"time": "2026-10-20", "value": 2030.02}, {"time": "2026-10-21", "value": 2029.59}, {"time": "2026-10-22", "value": 2028.89}, {"time": "2026-10-23", "value": 2028.29}, {"time": "2026-10-26", "value": 2027.85}, {"time": "2026-10-27", "value": 2027.32}, {"time": "2026-10-28", "value": 2026.79}, {"time": "2026-10-29", "value": 2026.29}, {"time": "2026-10-30", "value": 2025.79}, {"time": "2026-11-02", "value": 2025.25}, {"time": "2026-11-03", "value": 2024.75}, {"time": "2026-11-04", "value": 2024.32}];
+    const ma200Data = [{"time": "2026-08-28", "value": 2050.83}, {"time": "2026-08-31", "value": 2050.55}, {"time": "2026-09-01", "value": 2050.28}, {"time": "2026-09-02", "value": 2050.08}, {"time": "2026-09-03", "value": 2049.83}, {"time": "2026-09-04", "value": 2049.63}, {"time": "2026-09-07", "value": 2049.41}, {"time": "2026-09-08", "value": 2049.13}, {"time": "2026-09-09", "value": 2048.88}, {"time": "2026-09-10", "value": 2048.68}, {"time": "2026-09-11", "value": 2048.48}, {"time": "2026-09-14", "value": 2048.26}, {"time": "2026-09-15", "value": 2048.03}, {"time": "2026-09-16", "value": 2047.86}, {"time": "2026-09-17", "value": 2047.68}, {"time": "2026-09-18", "value": 2047.51}, {"time": "2026-09-21", "value": 2047.28}, {"time": "2026-09-22", "value": 2047.06}, {"time": "2026-09-23", "value": 2046.83}, {"time": "2026-09-28", "value": 2046.53}, {"time": "2026-09-29", "value": 2046.13}, {"time": "2026-09-30", "value": 2045.86}, {"time": "2026-10-01", "value": 2045.58}, {"time": "2026-10-02", "value": 2045.23}, {"time": "2026-10-06", "value": 2044.83}, {"time": "2026-10-07", "value": 2044.44}, {"time": "2026-10-08", "value": 2044.19}, {"time": "2026-10-12", "value": 2043.89}, {"time": "2026-10-13", "value": 2043.69}, {"time": "2026-10-14", "value": 2043.39}, {"time": "2026-10-15", "value": 2043.14}, {"time": "2026-10-16", "value": 2042.89}, {"time": "2026-10-19", "value": 2042.71}, {"time": "2026-10-20", "value": 2042.54}, {"time": "2026-10-21", "value": 2042.39}, {"time": "2026-10-22", "value": 2042.09}, {"time": "2026-10-23", "value": 2041.82}, {"time": "2026-10-26", "value": 2041.59}, {"time": "2026-10-27", "value": 2041.37}, {"time": "2026-10-28", "value": 2041.14}, {"time": "2026-10-29", "value": 2040.91}, {"time": "2026-10-30", "value": 2040.64}, {"time": "2026-11-02", "value": 2040.37}, {"time": "2026-11-03", "value": 2040.07}, {"time": "2026-11-04", "value": 2039.82}];
+    const rsData = [{"time": "2026-08-28", "value": 64}, {"time": "2026-08-31", "value": 63}, {"time": "2026-09-01", "value": 61}, {"time": "2026-09-02", "value": 62}, {"time": "2026-09-03", "value": 62}, {"time": "2026-09-04", "value": 63}, {"time": "2026-09-07", "value": 56}, {"time": "2026-09-08", "value": 57}, {"time": "2026-09-09", "value": 59}, {"time": "2026-09-10", "value": 58}, {"time": "2026-09-11", "value": 61}, {"time": "2026-09-14", "value": 59}, {"time": "2026-09-15", "value": 58}, {"time": "2026-09-16", "value": 59}, {"time": "2026-09-17", "value": 57}, {"time": "2026-09-18", "value": 55}, {"time": "2026-09-21", "value": 53}, {"time": "2026-09-22", "value": 48}, {"time": "2026-09-23", "value": 51}, {"time": "2026-09-28", "value": 49}, {"time": "2026-09-29", "value": 48}, {"time": "2026-09-30", "value": 53}, {"time": "2026-10-01", "value": 50}, {"time": "2026-10-02", "value": 51}, {"time": "2026-10-06", "value": 50}, {"time": "2026-10-07", "value": 51}, {"time": "2026-10-08", "value": 53}, {"time": "2026-10-12", "value": 54}, {"time": "2026-10-13", "value": 53}, {"time": "2026-10-14", "value": 51}, {"time": "2026-10-15", "value": 59}, {"time": "2026-10-16", "value": 54}, {"time": "2026-10-19", "value": 49}, {"time": "2026-10-20", "value": 55}, {"time": "2026-10-21", "value": 56}, {"time": "2026-10-22", "value": 53}, {"time": "2026-10-23", "value": 55}, {"time": "2026-10-26", "value": 58}, {"time": "2026-10-27", "value": 60}, {"time": "2026-10-28", "value": 58}, {"time": "2026-10-29", "value": 59}, {"time": "2026-10-30", "value": 60}, {"time": "2026-11-02", "value": 52}, {"time": "2026-11-03", "value": 54}, {"time": "2026-11-04", "value": 58}];
+
+    const chartOptions = {
+      layout: {
+        background: { color: '#ffffff' },
+        textColor: '#333333',
+      },
+      grid: {
+        vertLines: { color: '#e0e3eb' },
+        horzLines: { color: '#e0e3eb' },
+      },
+      crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+      rightPriceScale: { borderColor: '#d1d4dc' },
+      timeScale: { borderColor: '#d1d4dc', timeVisible: true, fixLeftEdge: true, fixRightEdge: true },
+    };
+
+    // 캔들차트
+    const candleEl = document.getElementById('candle-chart');
+    const candleChart = LightweightCharts.createChart(candleEl, {
+      ...chartOptions,
+      autoSize: true,
+    });
+
+    const candleSeries = candleChart.addSeries(LightweightCharts.CandlestickSeries, {
+      upColor: '#ef5350',
+      downColor: '#2196f3',
+      borderDownColor: '#2196f3',
+      borderUpColor: '#ef5350',
+      wickDownColor: '#2196f3',
+      wickUpColor: '#ef5350',
+    });
+    candleSeries.setData(candleData);
+
+    const ma50Series = candleChart.addSeries(LightweightCharts.LineSeries, { color: '#2196f3', lineWidth: 1, priceLineVisible: false });
+    ma50Series.setData(ma50Data);
+
+    const ma150Series = candleChart.addSeries(LightweightCharts.LineSeries, { color: '#ff9800', lineWidth: 1, priceLineVisible: false });
+    ma150Series.setData(ma150Data);
+
+    const ma200Series = candleChart.addSeries(LightweightCharts.LineSeries, { color: '#f44336', lineWidth: 1, priceLineVisible: false });
+    ma200Series.setData(ma200Data);
+
+    candleChart.timeScale().fitContent();
+
+    // RS 점수 차트
+    const rsEl = document.getElementById('rs-chart');
+    const rsChart = LightweightCharts.createChart(rsEl, {
+      ...chartOptions,
+      autoSize: true,
+    });
+
+    const rsSeries = rsChart.addSeries(LightweightCharts.LineSeries, {
+      color: '#7b1fa2',
+      lineWidth: 2,
+      priceLineVisible: false,
+    });
+    rsSeries.setData(rsData);
+    rsChart.timeScale().fitContent();
+
+    // 두 차트 시간축 동기화 (같은 날짜 범위이므로 logical range 사용)
+    let syncing = false;
+    candleChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+      if (syncing || !range) return;
+      syncing = true;
+      rsChart.timeScale().setVisibleLogicalRange(range);
+      syncing = false;
+    });
+    rsChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
+      if (syncing || !range) return;
+      syncing = true;
+      candleChart.timeScale().setVisibleLogicalRange(range);
+      syncing = false;
+    });
+  </script>
+</body>
+</html>

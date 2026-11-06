@@ -1,0 +1,83 @@
+---
+layout: single
+title: "코스닥 미너비니 트렌드 템플릿 2026년 10월 21일"
+date: 2026-10-21 12:57:12 +0900
+categories: minervini
+---
+마크 미니버니(Mark Minervini)의 트렌드 템플릿(Trend Template)을 계산하여 만족한 결과만 나열하였습니다. 필터링에 걸린 종목은 아래에 나열되어 있지 않습니다.
+
+아래 기술된 미너비니 트렌드 템플릿 계산 방식으로 계산합니다. 계산 방법에서 RS 값이 최소 70이상이고 80, 90이면 좋다고 하고 있는데 70이상만 결과로 표기하고 80이나 90에 대해서 특별히 더 자세히 보이지는 않습니다.
+
+## 미너비니 트렌드 템플릿
+
+|종목코드|이름|종가|RS|신고가,신저가|MA50,150,200|
+|------|---|---|--|---------|------------|
+|[351320]({{ site.baseurl }}/charts/351320.html)|넥사다이내믹스|4,970|98 ▬|5,050, 852|3,301, 1,918, 1,737|
+|[396300]({{ site.baseurl }}/charts/396300.html)|세아메카닉스|11,410|98 ▬|11,410, 2,295|5,479, 4,701, 4,432|
+|[327260]({{ site.baseurl }}/charts/327260.html)|RF머트리얼즈|45,150|98 ▬|59,463, 6,673|41,975, 38,003, 32,772|
+|[092870]({{ site.baseurl }}/charts/092870.html)|엑시콘|52,700|98 ▬|57,700, 10,960|34,782, 28,933, 27,457|
+|[032580]({{ site.baseurl }}/charts/032580.html)|피델릭스|6,570|98 ▬|8,460, 850|5,507, 4,135, 3,374|
+|[159010]({{ site.baseurl }}/charts/159010.html)|아스플로|30,350|98 ▬|34,750, 3,740|25,023, 17,125, 14,147|
+|[079650]({{ site.baseurl }}/charts/079650.html)|서산|7,600|97 ▬|8,780, 979|6,073, 3,721, 3,148|
+|[052460]({{ site.baseurl }}/charts/052460.html)|아이크래프트|7,580|97 🔺(+1)|8,010, 2,335|6,116, 4,332, 4,045|
+|[080580]({{ site.baseurl }}/charts/080580.html)|오킨스전자|25,950|97 🔺(+1)|29,850, 7,660|21,613, 19,316, 17,800|
+|[131290]({{ site.baseurl }}/charts/131290.html)|티에스이|274,000|96 🔻(-1)|334,000, 46,100|263,680, 213,903, 179,882|
+|[042510]({{ site.baseurl }}/charts/042510.html)|라온시큐어|17,790|96 🔻(-1)|20,800, 6,720|11,270, 10,093, 9,889|
+|[031980]({{ site.baseurl }}/charts/031980.html)|피에스케이홀딩스|184,100|96 ▬|220,000, 40,800|151,584, 129,343, 114,734|
+|[052860]({{ site.baseurl }}/charts/052860.html)|아이앤씨|7,200|96 ▬|8,050, 2,150|6,485, 5,459, 4,833|
+|[091580]({{ site.baseurl }}/charts/091580.html)|상신이디피|26,200|96 ▬|30,700, 11,210|21,227, 19,979, 18,616|
+|[064290]({{ site.baseurl }}/charts/064290.html)|인텍플러스|56,800|95 🔻(-1)|61,700, 11,110|44,711, 36,072, 30,927|
+|[219130]({{ site.baseurl }}/charts/219130.html)|타이거일렉|89,500|95 🔻(-1)|98,000, 15,450|75,674, 61,022, 53,206|
+|[036540]({{ site.baseurl }}/charts/036540.html)|SFA반도체|9,510|94 🔺(+1)|11,590, 3,790|7,896, 7,228, 6,993|
+|[051160]({{ site.baseurl }}/charts/051160.html)|지어소프트|13,600|94 🔻(-2)|14,840, 6,480|11,181, 8,769, 8,484|
+|[065690]({{ site.baseurl }}/charts/065690.html)|파커스|1,935|94 🔻(-1)|1,968, 913|1,803, 1,481, 1,458|
+|[005160]({{ site.baseurl }}/charts/005160.html)|동국산업|4,455|94 🔻(-1)|4,675, 2,155|3,174, 2,948, 2,899|
+|[144960]({{ site.baseurl }}/charts/144960.html)|뉴파워프라즈마|13,890|94 ▬|14,000, 4,760|11,011, 8,873, 8,123|
+|[466910]({{ site.baseurl }}/charts/466910.html)|엔에이치스팩30호|5,640|94 ▬|5,640, 2,890|4,758, 3,727, 3,537|
+|[425420]({{ site.baseurl }}/charts/425420.html)|티에프이|63,800|93 🔺(+1)|74,400, 24,850|52,616, 52,062, 49,090|
+|[137080]({{ site.baseurl }}/charts/137080.html)|나래나노텍|7,280|92 🔻(-1)|7,280, 2,990|6,396, 5,632, 5,294|
+|[355690]({{ site.baseurl }}/charts/355690.html)|에이텀|7,180|91 🔻(-3)|8,010, 3,113|5,271, 4,903, 4,610|
+|[446540]({{ site.baseurl }}/charts/446540.html)|메가터치|8,780|91 🔻(-1)|11,650, 3,285|8,648, 6,972, 6,203|
+|[217190]({{ site.baseurl }}/charts/217190.html)|제너셈|8,670|91 ▬|10,200, 4,200|7,127, 6,381, 6,180|
+|[033560]({{ site.baseurl }}/charts/033560.html)|블루콤|6,090|91 🔻(-2)|6,090, 2,760|4,989, 4,099, 3,825|
+|[141000]({{ site.baseurl }}/charts/141000.html)|비아트론|13,030|91 🔻(-2)|14,810, 6,700|10,126, 9,816, 9,390|
+|[045510]({{ site.baseurl }}/charts/045510.html)|정원엔시스|1,297|91 🔻(-1)|1,686, 675|1,148, 1,008, 970|
+|[252990]({{ site.baseurl }}/charts/252990.html)|샘씨엔에스|16,180|90 ▬|20,300, 6,260|15,713, 13,419, 12,325|
+|[059100]({{ site.baseurl }}/charts/059100.html)|아이컴포넌트|7,770|90 🔻(-1)|8,280, 4,410|6,610, 5,691, 5,601|
+|[049430]({{ site.baseurl }}/charts/049430.html)|코메론|21,800|90 ▬|23,350, 10,340|21,767, 20,289, 18,866|
+|[451700]({{ site.baseurl }}/charts/451700.html)|엔에이치스팩29호|3,440|89 🔻(-1)|3,955, 2,120|3,089, 2,697, 2,666|
+|[094860]({{ site.baseurl }}/charts/094860.html)|네오리진|1,795|89 🔻(-1)|1,823, 913|1,476, 1,415, 1,368|
+|[041520]({{ site.baseurl }}/charts/041520.html)|이엘씨|12,040|88 ▬|13,200, 6,150|11,898, 10,415, 9,623|
+|[900260]({{ site.baseurl }}/charts/900260.html)|로스웰|1,921|88 🔺(+1)|2,025, 907|1,809, 1,693, 1,671|
+|[265740]({{ site.baseurl }}/charts/265740.html)|엔에프씨|7,240|88 🔻(-1)|9,400, 4,125|7,110, 6,573, 6,399|
+|[036800]({{ site.baseurl }}/charts/036800.html)|나이스정보통신|7,720|87 🔻(-2)|8,480, 4,350|7,392, 6,194, 5,888|
+|[071200]({{ site.baseurl }}/charts/071200.html)|인피니트헬스케어|10,840|87 🔻(-2)|13,410, 5,600|10,533, 8,327, 7,837|
+|[121890]({{ site.baseurl }}/charts/121890.html)|에스디시스템|2,660|87 🔻(-3)|2,940, 1,329|2,591, 2,147, 2,006|
+|[059090]({{ site.baseurl }}/charts/059090.html)|미코|21,000|86 🔺(+4)|27,900, 11,910|20,085, 18,720, 17,769|
+|[228850]({{ site.baseurl }}/charts/228850.html)|레이언스|7,980|86 ▬|8,580, 4,895|7,451, 6,651, 6,298|
+|[100120]({{ site.baseurl }}/charts/100120.html)|뷰웍스|28,950|85 ▬|32,950, 18,070|27,349, 26,587, 25,721|
+|[086450]({{ site.baseurl }}/charts/086450.html)|동국제약|24,350|85 🔻(-1)|29,900, 16,420|21,186, 21,072, 20,343|
+|[096530]({{ site.baseurl }}/charts/096530.html)|씨젠|36,150|85 🔻(-1)|38,800, 21,850|33,446, 28,911, 28,008|
+|[022220]({{ site.baseurl }}/charts/022220.html)|티케이지애강|794|83 🔻(-2)|895, 510|774, 729, 708|
+|[068930]({{ site.baseurl }}/charts/068930.html)|디지털대성|9,430|83 🔻(-1)|9,830, 6,810|8,828, 8,234, 8,225|
+|[122640]({{ site.baseurl }}/charts/122640.html)|예스티|30,800|83 🔺(+5)|39,850, 15,750|29,069, 27,608, 25,853|
+|[017650]({{ site.baseurl }}/charts/017650.html)|대림제지|2,130|82 🔻(-1)|2,176, 1,428|2,125, 1,916, 1,871|
+|[050120]({{ site.baseurl }}/charts/050120.html)|ES큐브|3,700|81 🔺(+4)|3,710, 2,270|3,303, 2,960, 2,907|
+|[091340]({{ site.baseurl }}/charts/091340.html)|S&K폴리텍|2,750|80 🔻(-3)|2,825, 1,874|2,434, 2,374, 2,353|
+|[037760]({{ site.baseurl }}/charts/037760.html)|쎄니트|2,530|79 🔻(-1)|2,555, 1,640|2,422, 2,358, 2,219|
+|[051360]({{ site.baseurl }}/charts/051360.html)|토비스|12,120|78 ▬|13,140, 8,650|11,701, 10,849, 10,545|
+|[185490]({{ site.baseurl }}/charts/185490.html)|아이진|1,940|74 🔻(-2)|2,375, 1,193|1,931, 1,638, 1,604|
+|[086060]({{ site.baseurl }}/charts/086060.html)|진바이오텍|4,995|71 🔻(-2)|5,230, 3,600|4,818, 4,661, 4,627|
+
+## 미너비니 트렌드 템플릿 계산 방식
+
+"Trade Like a Stock Market Wizard: How to Achieve Super Performance in Stocks in Any Market"에서
+
+ 1. The current stock price is above both the 150-day (30-week) and the 200-day (40-week) moving average price lines.
+ 1. The 150-day moving average is above the 200-day moving average.
+ 1. The 200-day moving average line is trending up for at least 1 month (preferably 4–5 months minimum in most cases).
+ 1. The 50-day (10-week) moving average is above both the 150-day and 200-day moving averages.
+ 1. The current stock price is trading above the 50-day moving average.
+ 1. The current stock price is at least 30 percent above its 52-week low. (Many of the best selections will be 100 percent, 300 percent, or greater above their 52-week low before they emerge from a solid consolidation period and mount a large scale advance.)
+ 1. The current stock price is within at least 25 percent of its 52-week high (the closer to a new high the better).
+ 1. The relative strength ranking (as reported in Investor's Business Daily) is no less than 70, and preferably in the 80s or 90s, which will generally be the case with the better selections.

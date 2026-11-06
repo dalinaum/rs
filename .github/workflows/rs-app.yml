@@ -1,0 +1,37 @@
+name: Scrap KOSPI stock data and calculate RS rating all.
+
+on:
+  schedule:
+    - cron: "45 6 * * 1-5"
+  workflow_dispatch: {}
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
+    - name: Install dependencies
+      run: uv sync
+    - name: Run KOSPI script
+      run: uv run ./calc-kospi-rs.py
+    - name: Run KOSDAQ script
+      run: uv run ./calc-kosdaq-rs.py
+    - name: Run KRX script
+      run: uv run ./calc-krx-rs.py
+    - name: Commits
+      run: |
+        git config --local user.email "dalinaum@gmail.com"
+        git config --local user.name "Dalinaum"
+        git add .
+        git commit -m "[AUTO] Daily KOSPI RS rating"
+    - name: Push
+      uses: ad-m/github-push-action@master
+      with:
+        branch: 'main'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
