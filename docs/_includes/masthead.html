@@ -1,0 +1,44 @@
+{% capture logo_path %}{{ site.logo }}{% endcapture %}
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        {% unless logo_path == empty %}
+          <a class="site-logo" href="{{ '/' | relative_url }}"><img src="{{ logo_path | relative_url }}" alt="{{ site.masthead_title | default: site.title }}"></a>
+        {% endunless %}
+        <a class="site-title" href="{{ '/' | relative_url }}">
+          {{ site.masthead_title | default: site.title }}
+          {% if site.subtitle %}<span class="site-subtitle">{{ site.subtitle }}</span>{% endif %}
+        </a>
+        <ul class="visible-links">
+          {%- for link in site.data.navigation.main -%}
+            <li class="masthead__menu-item">
+              <a href="{{ link.url | relative_url }}"{% if link.description %} title="{{ link.description }}"{% endif %}>{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% if site.search == true %}
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">{{ site.data.ui-text[site.locale].search_label | default: "Toggle search" }}</span>
+          <i class="fas fa-search"></i>
+        </button>
+        {% endif %}
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">{{ site.data.ui-text[site.locale].menu_label | default: "Toggle menu" }}</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+{% comment %} 사이트 공지: GitHub Actions schedule 트리거 지연 (issue #22) {% endcomment %}
+<div class="masthead__inner-wrap" style="padding-top: 0; padding-bottom: 0;">
+  <div class="notice--warning" style="margin: 0.5em 0 0;">
+    <strong>안내</strong> · 2026년 8월 말부터 GitHub Actions의 예약 실행(schedule) 장애로 데이터 수집이 예정 시각(평일 15:45 KST)보다 최대 8시간가량 늦어지는 경우가 있습니다.
+    늦게 올라오더라도 데이터는 해당일 장 마감 기준으로 계산되므로 내용은 정확합니다.
+    자세한 내용은 <a href="https://github.com/dalinaum/rs/issues/22">이슈 #22</a>를 참고하세요.
+  </div>
+</div>
