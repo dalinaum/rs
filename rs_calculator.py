@@ -9,6 +9,11 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 import textwrap
+from pathlib import Path
+from collections import defaultdict
+
+from price_history import (adjust_prices, atomic_csv, collect_adjustments, read_adjustments,
+                           repair_cache_file, save_prices)
 
 
 quater = 21 * 3
@@ -59,8 +64,14 @@ MARKET_CONFIGS = {
 }
 
 
-def c(code):
-    link = "{{ site.baseurl }}" + f"/charts/{code}.html"
+def chart_directory(market):
+    root = Path("docs/charts")
+    return root if market == "KRX" else root / MARKET_CONFIGS[market]["slug"]
+
+
+def c(code, market):
+    path = chart_directory(market).relative_to("docs") / f"{code}.html"
+    link = "{{ site.baseurl }}/" + path.as_posix()
     return f"[{code}]({link})"
 
 
@@ -86,41 +97,35 @@ def calc_score(data, day=-1):
         return -1
 
 
-def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
-    """종목별 캔들차트 + RS 백분위 추이 HTML 파일 생성."""
-    # OHLCV 데이터를 TradingView Lightweight Charts 형식으로 변환
-    candle_data = []
-    for _, row in data.iterrows():
-        value = row.get('Date', None)
-        if pd.isna(value):
-            continue
-        date_str = str(value).split(' ')[0]
-        try:
-            o, h, l, c = float(row['Open']), float(row['High']), float(row['Low']), float(row['Close'])
-            if o <= 0 or h <= 0 or l <= 0 or c <= 0:
-                continue
-            candle_data.append({
-                'time': date_str,
-                'open': o,
-                'high': h,
-                'low': l,
-                'close': c,
-            })
-        except (ValueError, KeyError):
-            continue
+def score_series(close):
+    q1, q2, q3, q4 = (close.shift(n * quater) for n in range(1, 5))
+    return 2 * (close / q1) + q1 / q2 + q2 / q3 + q3 / q4
 
-    # Close가 NaN인 행을 제외하고 날짜/종가 짝을 맞춤
-    mask = data['Close'].notna()
-    dates_all = data.loc[mask, 'Date'].astype(str).str.split(' ').str[0].tolist()
-    closes = data.loc[mask, 'Close'].values
+
+def chart_ranks(per_symbol):
+    raw = pd.DataFrame(per_symbol).sort_index()
+    return raw.rank(axis=1).mul(98).div(raw.count(axis=1), axis=0).apply(np.trunc) + 1
+
+
+def chart_points(ranks):
+    return [{"time": day, "value": int(value)} for day, value in ranks.dropna().items()]
+
+
+def generate_chart_html(code, name, data, charts_dir, rs_percentile_series, market):
+    """종목별 캔들차트 + RS 백분위 추이 HTML 파일 생성."""
+    dates = data["Date"].astype(str).str.split(" ").str[0]
+    valid = data[["Open", "High", "Low", "Close"]].gt(0).all(axis=1) & data.Date.notna()
+    candles = data.loc[valid, ["Open", "High", "Low", "Close"]].astype(float)
+    candles.columns = ["open", "high", "low", "close"]
+    candles.insert(0, "time", dates[valid])
+    candle_data = candles.to_dict("records")
+    mask = data.Close.notna()
+    closes, dates_all = data.Close[mask], dates[mask]
 
     def calc_ma(closes, dates, period):
-        result = []
-        for i in range(len(closes)):
-            if i + 1 >= period:
-                ma_val = float(np.mean(closes[i + 1 - period:i + 1]))
-                result.append({'time': dates[i], 'value': round(ma_val, 2)})
-        return result
+        average = closes.rolling(period).mean().dropna()
+        return [{"time": day, "value": round(value, 2)}
+                for day, value in zip(dates.loc[average.index], average)]
 
     ma50_data = calc_ma(closes, dates_all, 50)
     ma150_data = calc_ma(closes, dates_all, 150)
@@ -143,7 +148,7 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
     ma200_json = json.dumps(ma200_data)
     rs_json = json.dumps(rs_series)
 
-    title = f"{name} ({code})"
+    title = f"{name} ({code}) · {market}"
     site_title = "달리나음의 상대 강도"
 
     html = f"""<!DOCTYPE html>
@@ -251,10 +256,10 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
 </head>
 <body>
   <div class="masthead">
-    <a href="../" class="site-title">{site_title}</a>
+    <a href="{'../' if market == 'KRX' else '../../'}" class="site-title">{site_title}</a>
   </div>
   <div class="toolbar">
-    <a href="../">&larr; 목록</a>
+    <a href="{'../' if market == 'KRX' else '../../'}">&larr; 목록</a>
     <h1>{title}</h1>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
@@ -266,7 +271,7 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
   <div class="chart-container">
     <div id="candle-chart"></div>
     <div class="divider"></div>
-    <div id="rs-chart-label">RS 백분위 추이</div>
+    <div id="rs-chart-label">{market} RS 백분위 추이</div>
     <div id="rs-chart"></div>
   </div>
 
@@ -353,39 +358,90 @@ def generate_chart_html(code, name, data, charts_dir, rs_percentile_series):
 </html>
 """
 
-    charts_dir_full = os.path.join("docs", "charts")
-    os.makedirs(charts_dir_full, exist_ok=True)
-    html_path = os.path.join(charts_dir_full, f"{code}.html")
+    os.makedirs(charts_dir, exist_ok=True)
+    html_path = os.path.join(charts_dir, f"{code}.html")
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(html)
 
 
+def market_listing(config, date, actions, historical):
+    path = Path(config["list_filename"])
+    reports = Path("docs/_posts")
+    slug = config["slug"]
+    previous = pd.read_csv(path, index_col=0, dtype={"Code": str}) if path.exists() else None
+    if historical:
+        report = reports / f"{date}-{slug}-rs.markdown"
+        if report.exists():
+            rows = []
+            for line in report.read_text().splitlines():
+                if line.startswith("|"):
+                    cells = line.split("|")
+                    code = cells[1].lstrip("[")[:6]
+                    if len(code) == 6 and code.isascii() and code.isalnum():
+                        rows.append((code, cells[2]))
+            if rows:
+                return pd.DataFrame(rows, columns=["Code", "Name"])
+        print(f"{date} 당시 시장 목록을 찾을 수 없어 현재 구성 종목을 사용합니다.")
+    try:
+        current = fdr.StockListing(config["target"])
+    except Exception:
+        if previous is None:
+            raise
+        print(f"FDR 상장 목록 조회 실패. {path}의 마지막 목록을 사용합니다.")
+        return previous
+    if historical:
+        return current
+
+    previous_day = date
+    if previous is not None:
+        if "SnapshotDate" in previous:
+            previous_day = str(previous.SnapshotDate.iloc[0])
+        else:
+            previous_day = max((p.name[:10] for p in reports.glob(f"*-{slug}-rs.markdown")),
+                               default=date)
+    start = pd.Timestamp(previous_day) - pd.Timedelta(days=21)
+    calendar = fdr.DataReader("NAVER:005930", start, date)
+    prior_sessions = calendar.loc[:previous_day]
+    if prior_sessions.empty:
+        raise ValueError("FDR에서 상장 목록의 거래 기준일을 확인할 수 없습니다.")
+    previous_day = prior_sessions.index[-1].date().isoformat()
+    snapshot_day = calendar.index[-1].date().isoformat()
+    if previous is not None and previous_day < snapshot_day:
+        fields = ["Close", "Stocks"]
+        if previous.set_index("Code")[fields].sort_index().equals(
+                current.set_index("Code")[fields].sort_index()):
+            return current
+        collect_adjustments(previous, current, previous_day, snapshot_day, actions)
+    if previous is not None and previous_day == snapshot_day:
+        # Listings and quotes can refresh at different times on the same run.
+        # Keep the last verified observation for the next comparison.
+        return current
+    with atomic_csv(path) as f:
+        current.assign(SnapshotDate=snapshot_day).to_csv(f)
+    return current
+
+
 def run_market_analysis(market_key, target_date=None):
     config = MARKET_CONFIGS[market_key]
-    target = config['target']
-    list_filename = config['list_filename']
     display_name = config['display_name']
     slug = config['slug']
     fetch_message = config['fetch_message']
 
-    print(fetch_message)
-    try:
-        stock_list = fdr.StockListing(target)
-        stock_list.to_csv(list_filename)
-    except Exception as e:
-        print(f"StockListing 실패: {e}")
-        print(f"기존 {list_filename}을 사용합니다.")
-        stock_list = pd.read_csv(list_filename, index_col=0)
-        stock_list['Code'] = stock_list['Code'].astype(str).str.zfill(6)
-
-    print(stock_list.shape)
-
     if target_date:
         now = dt.datetime.strptime(target_date, "%Y-%m-%d")
-        date = target_date
     else:
         now = dt.datetime.now()
-        date = now.strftime("%Y-%m-%d")
+    date = now.strftime("%Y-%m-%d")
+    actions = read_adjustments()
+    print(fetch_message)
+    historical = bool(target_date and date < dt.date.today().isoformat())
+    stock_list = market_listing(config, date, actions, historical)
+    print(stock_list.shape)
+
+    by_code = defaultdict(list)
+    for action in actions.values():
+        by_code[action.code].append(action)
+    unresolved = []
 
     data_dir = os.path.join(DATA_DIR_ROOT, date)
     os.makedirs(data_dir, exist_ok=True)
@@ -395,16 +451,21 @@ def run_market_analysis(market_key, target_date=None):
         filename = f"{i.Code}-{i.Name}.csv"
         file_path = os.path.join(data_dir, filename)
 
-        if os.path.exists(file_path):
-            print(f"{file_path}가 이미 있습니다.\n가져오지 않습니다.")
-        else:
+        if not os.path.exists(file_path):
             print(f"{i.Code}를 가져옵니다.")
-            data = fdr.DataReader(i.Code, "2022")
-            data.to_csv(file_path)
+            data = fdr.DataReader(f"NAVER:{i.Code}", "2022", date)
+            if by_code[i.Code]:
+                data = adjust_prices(data, by_code[i.Code], date, unresolved)
+            save_prices(data, file_path)
             print(f"{i.Code}를 가져왔습니다. 잠시 대기합니다.")
             time.sleep(np.random.uniform(0.1, 0.9))
+        elif by_code[i.Code]:
+            # The cache can predate either a disclosure or this correction.
+            repair_cache_file(file_path, by_code[i.Code], date, unresolved)
 
     print("모든 항목을 가져왔습니다.")
+    for note in unresolved:
+        print(f"가격 보정 미검증: {note}")
 
     rs_df = pd.DataFrame(columns=RS_DF_COLUMNS)
     stock_data_cache = {}      # {code: (name, data_df)}
@@ -456,20 +517,8 @@ def run_market_analysis(market_key, target_date=None):
                 'Max52W': max_52w,
             }])], ignore_index=True)
 
-            # 과거 raw score 시계열 수집 (차트 백분위 변환용)
-            total_len = len(data)
-            min_required = quater * 4
-            # Close가 NaN인 행을 제외한 날짜 목록
-            mask = data['Close'].notna()
-            dates_all = data.loc[mask, 'Date'].astype(str).str.split(' ').str[0].tolist()
-            for day_offset in range(-min_required, 0):
-                score = calc_score(data, day=day_offset)
-                if score != -1:
-                    abs_idx = total_len + day_offset
-                    date_str = dates_all[abs_idx]
-                    if date_str not in daily_raw_scores:
-                        daily_raw_scores[date_str] = {}
-                    daily_raw_scores[date_str][i.Code] = score
+            close = data.set_index("Date").Close
+            daily_raw_scores[i.Code] = score_series(close).tail(4 * quater)
 
         print(f"today score: {today_score} / yesterday score: {yesterday_score}")
 
@@ -482,33 +531,19 @@ def run_market_analysis(market_key, target_date=None):
 
     na_index = rs_df['YesterdayRS'].isna()
     rs_df['RankChange'] = rs_df['RS'] - rs_df['YesterdayRS']
-    rs_df[na_index]['RankChange'] = -1
+    rs_df.loc[na_index, 'RankChange'] = -1
 
-    # 일별 백분위 계산 (차트용)
-    daily_percentiles = {}  # {date_str: {code: percentile(1~100)}}
-    for date_str, scores in daily_raw_scores.items():
-        scores_series = pd.Series(scores)
-        ranks = scores_series.rank()
-        percentiles = (ranks * 98 / len(scores_series)).apply(np.int64) + 1
-        daily_percentiles[date_str] = percentiles.to_dict()
-
-    # 백분위 계산 완료 후 차트 생성
-    charts_dir = os.path.join("docs", "charts")
-    sorted_dates = list(daily_percentiles.keys())
-    sorted_dates.sort()
-    for code, (name, data) in stock_data_cache.items():
-        rs_percentile_series = []
-        for date_str in sorted_dates:
-            if code in daily_percentiles[date_str]:
-                rs_percentile_series.append({
-                    'time': date_str,
-                    'value': int(daily_percentiles[date_str][code])
-                })
-        try:
-            generate_chart_html(code, name, data, charts_dir, rs_percentile_series)
-            print(f"{code} 차트 생성 완료")
-        except Exception as e:
-            print(f"{code} 차트 생성 실패: {e}")
+    newer_reports = any(p.name[:10] > date for p in Path("docs/_posts").glob(f"*-{slug}-rs.markdown"))
+    if not historical or not newer_reports:
+        daily_percentiles = chart_ranks(daily_raw_scores)
+        charts_dir = chart_directory(market_key)
+        for code, (name, data) in stock_data_cache.items():
+            rs_percentile_series = chart_points(daily_percentiles[code])
+            try:
+                generate_chart_html(code, name, data, charts_dir, rs_percentile_series, market_key)
+                print(f"{code} 차트 생성 완료")
+            except Exception as e:
+                print(f"{code} 차트 생성 실패: {e}")
 
     sorted = rs_df.sort_values('Rank', ascending=False)
 
@@ -555,7 +590,7 @@ def run_market_analysis(market_key, target_date=None):
             else:
                 pct_str = f"{pct:.1f}%"
             f.write(
-                f"|{c(i.Code)}|{i.Name}|{i.Close1:,}|{i.Close2:,}|{pct_str}|{i.RS} {change}|\n")
+                f"|{c(i.Code, market_key)}|{i.Name}|{i.Close1:,}|{i.Close2:,}|{pct_str}|{i.RS} {change}|\n")
 
     result_file_path = os.path.join(
         posts_dir, f"{date}-{slug}-trend-template.markdown")
@@ -611,7 +646,7 @@ def run_market_analysis(market_key, target_date=None):
             else:
                 trend_change = f"🔻({i.RankChange})"
             f.write(
-                f"|{c(i.Code)}|{i.Name}|{i.Close2:,}|{i.RS} {trend_change}|{i.Max52W:,}, {i.Min52W:,}|{i.MA50:,}, {i.MA150:,}, {i.MA200:,}|\n")
+                f"|{c(i.Code, market_key)}|{i.Name}|{i.Close2:,}|{i.RS} {trend_change}|{i.Max52W:,}, {i.Min52W:,}|{i.MA50:,}, {i.MA150:,}, {i.MA200:,}|\n")
 
         f.write("\n")
         footer = '''\
