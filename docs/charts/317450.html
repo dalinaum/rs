@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>명인제약 (317450)</title>
+  <title>명인제약 (317450) · KRX</title>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
   </div>
   <div class="toolbar">
     <a href="../">&larr; 목록</a>
-    <h1>명인제약 (317450)</h1>
+    <h1>명인제약 (317450) · KRX</h1>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#2196f3"></div>MA50</div>
       <div class="legend-item"><div class="legend-dot" style="background:#ff9800"></div>MA150</div>
@@ -118,7 +118,7 @@
   <div class="chart-container">
     <div id="candle-chart"></div>
     <div class="divider"></div>
-    <div id="rs-chart-label">RS 백분위 추이</div>
+    <div id="rs-chart-label">KRX RS 백분위 추이</div>
     <div id="rs-chart"></div>
   </div>
 
@@ -127,7 +127,7 @@
     const ma50Data = [{"time": "2026-10-20", "value": 44147.0}, {"time": "2026-10-21", "value": 44113.0}, {"time": "2026-10-22", "value": 44025.0}, {"time": "2026-10-23", "value": 43922.0}, {"time": "2026-10-26", "value": 43757.0}, {"time": "2026-10-27", "value": 43570.0}, {"time": "2026-10-28", "value": 43407.0}, {"time": "2026-10-29", "value": 43258.0}, {"time": "2026-10-30", "value": 43103.0}, {"time": "2026-11-02", "value": 42995.0}, {"time": "2026-11-03", "value": 42885.0}, {"time": "2026-11-04", "value": 42754.0}, {"time": "2026-11-05", "value": 42683.0}, {"time": "2026-11-06", "value": 42600.0}, {"time": "2026-11-09", "value": 42533.0}, {"time": "2026-11-10", "value": 42452.0}, {"time": "2026-11-11", "value": 42382.0}, {"time": "2026-11-12", "value": 42292.0}, {"time": "2026-11-13", "value": 42209.0}, {"time": "2026-11-16", "value": 42136.0}, {"time": "2026-11-17", "value": 42058.0}, {"time": "2026-11-18", "value": 42010.0}, {"time": "2026-11-19", "value": 41965.0}, {"time": "2026-11-20", "value": 41897.0}];
     const ma150Data = [{"time": "2026-10-20", "value": 47685.0}, {"time": "2026-10-21", "value": 47563.0}, {"time": "2026-10-22", "value": 47430.67}, {"time": "2026-10-23", "value": 47303.33}, {"time": "2026-10-26", "value": 47175.0}, {"time": "2026-10-27", "value": 47044.33}, {"time": "2026-10-28", "value": 46915.67}, {"time": "2026-10-29", "value": 46791.33}, {"time": "2026-10-30", "value": 46665.33}, {"time": "2026-11-02", "value": 46558.67}, {"time": "2026-11-03", "value": 46453.33}, {"time": "2026-11-04", "value": 46345.33}, {"time": "2026-11-05", "value": 46245.67}, {"time": "2026-11-06", "value": 46143.33}, {"time": "2026-11-09", "value": 46053.67}, {"time": "2026-11-10", "value": 45978.33}, {"time": "2026-11-11", "value": 45897.0}, {"time": "2026-11-12", "value": 45826.33}, {"time": "2026-11-13", "value": 45756.0}, {"time": "2026-11-16", "value": 45684.33}, {"time": "2026-11-17", "value": 45586.33}, {"time": "2026-11-18", "value": 45488.67}, {"time": "2026-11-19", "value": 45390.0}, {"time": "2026-11-20", "value": 45282.33}];
     const ma200Data = [{"time": "2026-10-20", "value": 51559.75}, {"time": "2026-10-21", "value": 51403.25}, {"time": "2026-10-22", "value": 51247.0}, {"time": "2026-10-23", "value": 51092.5}, {"time": "2026-10-26", "value": 50933.75}, {"time": "2026-10-27", "value": 50783.75}, {"time": "2026-10-28", "value": 50640.25}, {"time": "2026-10-29", "value": 50531.0}, {"time": "2026-10-30", "value": 50421.0}, {"time": "2026-11-02", "value": 50305.5}, {"time": "2026-11-03", "value": 50200.5}, {"time": "2026-11-04", "value": 50101.0}, {"time": "2026-11-05", "value": 50001.75}, {"time": "2026-11-06", "value": 49904.5}, {"time": "2026-11-09", "value": 49812.25}, {"time": "2026-11-10", "value": 49718.75}, {"time": "2026-11-11", "value": 49628.25}, {"time": "2026-11-12", "value": 49534.75}, {"time": "2026-11-13", "value": 49447.0}, {"time": "2026-11-16", "value": 49356.75}, {"time": "2026-11-17", "value": 49273.25}, {"time": "2026-11-18", "value": 49194.0}, {"time": "2026-11-19", "value": 49101.0}, {"time": "2026-11-20", "value": 48984.25}];
-    const rsData = [{"time": "2026-10-20", "value": 7}, {"time": "2026-10-21", "value": 8}, {"time": "2026-10-22", "value": 10}, {"time": "2026-10-23", "value": 11}, {"time": "2026-10-26", "value": 9}, {"time": "2026-10-27", "value": 10}, {"time": "2026-10-28", "value": 11}, {"time": "2026-10-29", "value": 11}, {"time": "2026-10-30", "value": 13}, {"time": "2026-11-02", "value": 12}, {"time": "2026-11-03", "value": 12}, {"time": "2026-11-04", "value": 12}, {"time": "2026-11-05", "value": 16}, {"time": "2026-11-06", "value": 18}, {"time": "2026-11-09", "value": 20}, {"time": "2026-11-10", "value": 18}, {"time": "2026-11-11", "value": 17}, {"time": "2026-11-12", "value": 17}, {"time": "2026-11-13", "value": 20}, {"time": "2026-11-16", "value": 24}, {"time": "2026-11-17", "value": 22}, {"time": "2026-11-18", "value": 25}, {"time": "2026-11-19", "value": 26}, {"time": "2026-11-20", "value": 25}];
+    const rsData = [{"time": "2026-10-20", "value": 7}, {"time": "2026-10-21", "value": 8}, {"time": "2026-10-22", "value": 10}, {"time": "2026-10-23", "value": 11}, {"time": "2026-10-26", "value": 9}, {"time": "2026-10-27", "value": 10}, {"time": "2026-10-28", "value": 11}, {"time": "2026-10-29", "value": 11}, {"time": "2026-10-30", "value": 13}, {"time": "2026-11-02", "value": 12}, {"time": "2026-11-03", "value": 12}, {"time": "2026-11-04", "value": 12}, {"time": "2026-11-05", "value": 16}, {"time": "2026-11-06", "value": 18}, {"time": "2026-11-09", "value": 20}, {"time": "2026-11-10", "value": 18}, {"time": "2026-11-11", "value": 17}, {"time": "2026-11-12", "value": 18}, {"time": "2026-11-13", "value": 20}, {"time": "2026-11-16", "value": 24}, {"time": "2026-11-17", "value": 22}, {"time": "2026-11-18", "value": 25}, {"time": "2026-11-19", "value": 26}, {"time": "2026-11-20", "value": 25}];
 
     const chartOptions = {
       layout: {
