@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
+import requests
 
 from price_history import (Adjustment, adjust_prices, collect_adjustments, confirm_adjustment,
                            read_adjustments, repair_cache_file, save_prices, share_factor)
@@ -79,6 +80,51 @@ class PriceHistoryTests(unittest.TestCase):
                 self.assertEqual(read.call_args.args[0], "YAHOO:304840.KQ")
             self.assertEqual(read_adjustments(paths["adjustments_path"]), {("304840", self.day): self.event})
             self.assertTrue(pd.read_csv(paths["pending_path"]).empty)
+
+    def yahoo_error(self, status, body):
+        response = requests.Response()
+        response.status_code = status
+        response._content = body.encode()
+        return requests.HTTPError(f"{status} Client Error", response=response)
+
+    def test_yahoo_no_data_400_stays_pending_and_next_code_proceeds(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = dict(pending_path=Path(tmp, "pending.csv"), adjustments_path=Path(tmp, "ledger.csv"))
+            stale = dict(code="043220", previous_date="2025-12-08", date="2025-12-09",
+                         previous_close=171, close=1710, factor=10.0, market="KOSDAQ")
+            split = dict(code="304840", previous_date=self.before, date=self.day,
+                         previous_close=561, close=1586, factor=2.0, market="KOSDAQ")
+            pd.DataFrame([stale, split]).to_csv(paths["pending_path"], index=False)
+            listing = pd.DataFrame([dict(Code="043220", Market="KOSDAQ", Stocks=10, Close=171),
+                                    dict(Code="304840", Market="KOSDAQ", Stocks=10, Close=1586)])
+            no_data = self.yahoo_error(400, '{"chart":{"result":null,"error":{"code":"Bad Request",'
+                                       '"description":"Data doesn\'t exist for startDate = 1765152000, '
+                                       'endDate = 1765324800"}}}')
+            quote = pd.DataFrame({"Close": [1122, 1586]}, index=self.days[-2:])
+            actions = {}
+            with (patch("price_history.fdr.DataReader", side_effect=[no_data, quote]) as read,
+                  self.assertLogs(level="WARNING")):
+                collect_adjustments(listing, listing, self.day, "2026-11-23", actions, **paths)
+            self.assertEqual(read.call_count, 2)
+            self.assertEqual(actions, {("304840", self.day): self.event})
+            pending = pd.read_csv(paths["pending_path"], dtype={"code": str})
+            self.assertEqual(pending.to_dict("records"), [stale])
+
+    def test_other_yahoo_400_propagates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = dict(pending_path=Path(tmp, "pending.csv"), adjustments_path=Path(tmp, "ledger.csv"))
+            row = dict(code="043220", previous_date="2025-12-08", date="2025-12-09",
+                       previous_close=171, close=1710, factor=10.0, market="KOSDAQ")
+            listing = pd.DataFrame([dict(Code="043220", Market="KOSDAQ", Stocks=10, Close=171)])
+            bodies = ['{"chart":{"result":null,"error":{"code":"Bad Request",'
+                      '"description":"Invalid input - interval=1x is not supported"}}}',
+                      "<html>Bad Request</html>"]
+            for body in bodies:
+                pd.DataFrame([row]).to_csv(paths["pending_path"], index=False)
+                with patch("price_history.fdr.DataReader", side_effect=self.yahoo_error(400, body)):
+                    with self.assertRaises(requests.HTTPError):
+                        collect_adjustments(listing, listing, self.day, "2026-11-23", {}, **paths)
+                self.assertEqual(len(pd.read_csv(paths["pending_path"])), 1)
 
     def test_vector_scores_and_chart_ranks(self):
         close = pd.Series(np.linspace(2600, 1900, len(self.days)), index=self.days)

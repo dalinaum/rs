@@ -124,6 +124,23 @@ def adjust_prices(prices, actions, as_of, unresolved=None):
     return prices
 
 
+def yahoo_has_no_data(exc):
+    """True when a Yahoo reader error means "nothing to compare", not a broken request."""
+    if exc.args == ("timestamp",):
+        return True
+    response = getattr(exc, "response", None)
+    status = getattr(response, "status_code", None)
+    if status == 404:
+        return True
+    if status != 400:
+        return False
+    try:
+        description = response.json()["chart"]["error"]["description"]
+    except (ValueError, KeyError, TypeError):
+        return False
+    return isinstance(description, str) and description.startswith("Data doesn't exist for startDate")
+
+
 def collect_adjustments(previous, current, previous_day, day, actions, *,
                         pending_path=Path("pending-price-checks.csv"), adjustments_path=ADJUSTMENTS):
     """Recheck unverified observations even after the daily listing file advances."""
@@ -158,9 +175,9 @@ def collect_adjustments(previous, current, previous_day, day, actions, *,
                                        pd.Timestamp(date) + pd.Timedelta(days=1))
         except (OSError, KeyError) as exc:
             # FDR's Yahoo reader raises HTTPError (an OSError) for missing
-            # symbols and KeyError("timestamp") for an empty chart.
-            if (getattr(getattr(exc, "response", None), "status_code", None) != 404
-                    and exc.args != ("timestamp",)):
+            # symbols, KeyError("timestamp") for an empty chart, and a 400
+            # whose body says the symbol has no data in the requested window.
+            if not yahoo_has_no_data(exc):
                 raise
             reference = pd.DataFrame()
         dates = reference.loc[before:date].index if not reference.empty else []
